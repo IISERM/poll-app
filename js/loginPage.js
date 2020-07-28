@@ -8,46 +8,46 @@ const firebaseConfig = {
     appId: "1:275134846597:web:0865c7c0a10dc59a1ffbec",
     measurementId: "G-QMNV123VEJ"
 };
-var lastHash="";
-window.onhashchange = hashChanged;
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
-function login(){
-    
-}
-
-function signUp(){
+function login() {
 
 }
 
-function sendResetPasswordLink(){
+function signUp() {
 
 }
 
-function showForgotPasswordDiv(){
-    document.getElementById("loginForm").style.display="none";
-    document.getElementById("forgotPasswordForm").style.display="block";
-    document.getElementById("forgotPasswordButton").style.display="none";
-    document.getElementById("createAccountButton").style.display="none";
-    location.hash="forgotPassword";
+function sendResetPasswordLink() {
+
 }
 
-function showSignUpDiv(){
-    document.getElementById("loginForm").style.display="none";
-    document.getElementById("signUpForm").style.display="block";
-    document.getElementById("forgotPasswordButton").style.display="none";
-    document.getElementById("createAccountButton").style.display="none";
-    location.hash="signUp";
+function showForgotPasswordDiv() {
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("signUpForm").style.display = "none";
+    document.getElementById("forgotPasswordForm").style.display = "block";
+    document.getElementById("sign_in_button").style.display = "initial";
+    document.getElementById("sign_up_button").style.display = "initial";
+    document.getElementById("forgot_pswd_button").style.display = "none";
+    location.hash = "forgotPassword";
 }
 
-function hashChanged(){
-    if(lastHash=="#forgotPassword" || lastHash=="#signUp"){
-        document.getElementById("signUpForm").style.display="none";
-        document.getElementById("forgotPasswordForm").style.display="none";
-        document.getElementById("loginForm").style.display="block";
-        document.getElementById("forgotPasswordButton").style.display="inline";
-        document.getElementById("createAccountButton").style.display="inline";
-	}
-    lastHash=location.hash;
+function showSignUpDiv() {
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("signUpForm").style.display = "block";
+    document.getElementById("forgotPasswordForm").style.display = "none";
+    document.getElementById("sign_in_button").style.display = "initial";
+    document.getElementById("sign_up_button").style.display = "none";
+    document.getElementById("forgot_pswd_button").style.display = "initial";
+    location.hash = "signUp";
+}
+function showSignInDiv() {
+    document.getElementById("loginForm").style.display = "block";
+    document.getElementById("signUpForm").style.display = "none";
+    document.getElementById("forgotPasswordForm").style.display = "none";
+    document.getElementById("sign_in_button").style.display = "none";
+    document.getElementById("sign_up_button").style.display = "initial";
+    document.getElementById("forgot_pswd_button").style.display = "initial";
+    location.hash = "signIn";
 }
