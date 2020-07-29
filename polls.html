@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/tachyon.min.css">
+    <title>Polling App | Polls</title>
+</head>
+
+<body class="pa3 avenir bg-washed-yellow">
+    <header class="flex justify-center tc w-100 bb mb2">
+        <h1 class="f2 lh-title fw1 mt0">
+            Polls
+        </h1>
+        <a class="f5 link dim br2 ph3 pv2 mb2 dib white bg-dark-green fixed right-2" href="#0">Sign Out</a>
+    </header>
+    <div class="flex flex-row w-100 pa2">
+        <select name="pollselect" id="pollselect"
+            class="pa1 br2 f4 ba b--transparent mh1 bg-dark-blue bg-black-70 white" style="flex-grow:1">
+            <option>India</option>
+            <option>India</option>
+            <option>India</option>
+            <option>India</option>
+        </select>
+        <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100" href="#0">Refresh List</a>
+        <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100" href="#0">Add Poll</a>
+    </div>
+    <div id="current_poll" class="min-h-100 br3 ba b--dark-blue bg-white pa3 tc mh1">
+        No poll loaded
+    </div>
+</body>
+
+</html>
