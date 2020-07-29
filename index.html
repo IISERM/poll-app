@@ -1,31 +1,33 @@
-<!doctype html>
+﻿<!doctype html>
 <html class="w-100 h-100">
 
 <head>
 	<meta charset="utf-8" />
 	<title>Polling App</title>
 	<link type="text/css" rel="stylesheet" href="css/tachyon.min.css" />
-	<script src="js/loginPage.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+	<script src="js/loginPage.js"></script>
 </head>
 
 <body class="w-100 vh-100 pa3 avenir flex flex-column justify-center bg-washed-yellow dark-blue">
 	<div id="loginForm">
-		<form class="measure center">
+		<form class="measure center" onsubmit="return false">
 			<fieldset id="sign_in" class="ba b--transparent ph0 mh0">
 				<legend class="f3 fw6 ph0 mh0">Sign In</legend>
 				<div class="mt3">
 					<label class="db fw6 lh-copy f6" for="email">IISER Email ID</label>
 					<input class="pa2 input-reset ba bg-transparent w-100" type="email" name="email" id="email"
-						placeholder="IISER Email ID">
+						placeholder="IISER Email ID" required>
 				</div>
 				<div class="mv3">
 					<label class="db fw6 lh-copy f6" for="password" required>Password</label>
-					<input class="pa2 input-reset ba bg-transparent w-100" type="password" name="password" id="password"
+					<input class="pa2 input-reset ba bg-transparent w-100" type="password" name="password" id="passwordLogin"
 						placeholder="Password" required>
 				</div>
-				<label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox"> Remember me</label>
+				<label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" id="ckbxRememberMe"> Remember me</label>
 			</fieldset>
 			<div class="">
 				<input class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 dib bg-dark-green white"
@@ -34,7 +36,7 @@
 		</form>
 	</div>
 	<div id="signUpForm" class="dn">
-		<form class="measure center">
+		<form class="measure center" onsubmit="return false">
 			<fieldset id="sign_up" class="ba b--transparent ph0 mh0">
 				<legend class="f3 fw6 ph0 mh0">Sign Up</legend>
 				<div class="mt3">
@@ -44,7 +46,7 @@
 				</div>
 				<div class="mt3">
 					<label class="db fw6 lh-copy f6" for="password">Password</label>
-					<input class="pa2 input-reset ba bg-transparent w-100" type="password" name="password" id="password"
+					<input class="pa2 input-reset ba bg-transparent w-100" type="password" name="password" id="passwordSignUp"
 						placeholder="Password" required>
 				</div>
 				<div class="mt3">
@@ -59,7 +61,7 @@
 		</form>
 	</div>
 	<div id="forgotPasswordForm" class="dn">
-		<form class="measure center">
+		<form class="measure center" onsubmit="return false">
 			<fieldset id="fgt_pswd" class="ba b--transparent ph0 mh0">
 				<legend class="f3 fw6 ph0 mh0">Forgot Password</legend>
 				<div class="mt3">
@@ -72,6 +74,13 @@
 					class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 bg-dark-green white"
 					type="submit" onclick="sendResetPasswordLink()" value="Send Verification Link"></div>
 		</form>
+	</div>
+	<div class="flex items-center justify-center pa4 bg-lightest-blue navy">
+		<svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
+			<title>info icon</title>
+			<path d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"></path>
+		</svg>
+		<span class="lh-title ml3" id="errorMsg"></span>
 	</div>
 	<div class="flex flex-row justify-center pa4">
 		<button id=sign_in_button onclick="showSignInDiv()"
