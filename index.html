@@ -1,36 +1,88 @@
 <!doctype html>
-<html>
+<html class="w-100 h-100">
+
 <head>
 	<meta charset="utf-8" />
 	<title>Polling App</title>
-	<link type="text/css" rel="stylesheet" href="css/login.css" />
+	<link type="text/css" rel="stylesheet" href="css/tachyon.min.css" />
 	<script src="js/loginPage.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
 </head>
-	<body>
-		<div id="loginForm">
-			<form>
-				<input type="email" name="email" placeholder="Username" required /><br />
-				<input type="password" name="password" placeholder="Password" required /><br />
-				<input type="submit" onclick="login()" value="Sign In"/>
-			</form>
-		</div>
-		<div id="signUpForm">
-			<form>
-				<input type="text" name="registrationNumber" placeholder="Registration Number" required /><br />
-				<input type="password" name="password" placeholder="Password" required /><br />
-				<input type="password" name="confirmPassword" placeholder="ConfirmPassword" required /><br />
-				<input type="submit" onclick="signUp()" value="Sign Up" />
-			</form>
-		</div>
-		<div id="forgotPasswordForm">
-			<form>
-				<input type="email" name="forgotPasswordEmail" placeholder="Username" required /><br />
-				<input type="submit" onclick="sendResetPasswordLink()" value="Send Verification Link" />
-			</form>
-		</div>
-		<button id="forgotPasswordButton" class="simpleTextButton" onclick="showForgotPasswordDiv()">Forgot Password</button>
-		<button id="createAccountButton" class="simpleTextButton" onclick="showSignUpDiv()">Create Account</button>
-	</body>
+
+<body class="w-100 vh-100 pa3 avenir flex flex-column justify-center bg-washed-yellow dark-blue">
+	<div id="loginForm">
+		<form class="measure center">
+			<fieldset id="sign_in" class="ba b--transparent ph0 mh0">
+				<legend class="f3 fw6 ph0 mh0">Sign In</legend>
+				<div class="mt3">
+					<label class="db fw6 lh-copy f6" for="email">IISER Email ID</label>
+					<input class="pa2 input-reset ba bg-transparent w-100" type="email" name="email" id="email"
+						placeholder="IISER Email ID">
+				</div>
+				<div class="mv3">
+					<label class="db fw6 lh-copy f6" for="password" required>Password</label>
+					<input class="pa2 input-reset ba bg-transparent w-100" type="password" name="password" id="password"
+						placeholder="Password" required>
+				</div>
+				<label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox"> Remember me</label>
+			</fieldset>
+			<div class="">
+				<input class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 dib bg-dark-green white"
+					type="submit" onclick="login()" value="Sign in">
+			</div>
+		</form>
+	</div>
+	<div id="signUpForm" class="dn">
+		<form class="measure center">
+			<fieldset id="sign_up" class="ba b--transparent ph0 mh0">
+				<legend class="f3 fw6 ph0 mh0">Sign Up</legend>
+				<div class="mt3">
+					<label class="db fw6 lh-copy f6" for="registrationNumber">Roll Number</label>
+					<input class="pa2 input-reset ba bg-transparent w-100" type="text" name="registrationNumber"
+						placeholder="Registration Number" required id="registrationNumber">
+				</div>
+				<div class="mt3">
+					<label class="db fw6 lh-copy f6" for="password">Password</label>
+					<input class="pa2 input-reset ba bg-transparent w-100" type="password" name="password" id="password"
+						placeholder="Password" required>
+				</div>
+				<div class="mt3">
+					<label class="db fw6 lh-copy f6" for="confirmPassword">Confirm Password</label>
+					<input class="pa2 input-reset ba bg-transparent w-100" type="password" name="confirmPassword"
+						id="confirmPassword" placeholder="Confirm Password" required>
+				</div>
+			</fieldset>
+			<div class="mt3"><input
+					class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 bg-dark-green white"
+					type="submit" onclick="signUp()" value="Sign Up"></div>
+		</form>
+	</div>
+	<div id="forgotPasswordForm" class="dn">
+		<form class="measure center">
+			<fieldset id="fgt_pswd" class="ba b--transparent ph0 mh0">
+				<legend class="f3 fw6 ph0 mh0">Forgot Password</legend>
+				<div class="mt3">
+					<label class="db fw6 lh-copy f6" for="forgotPasswordEmail">IISER Email ID</label>
+					<input class="pa2 input-reset ba bg-transparent w-100" type="text" name="forgotPasswordEmail"
+						placeholder="IISER Email ID" required id="forgotPasswordEmail">
+				</div>
+			</fieldset>
+			<div class="mt3"><input
+					class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 bg-dark-green white"
+					type="submit" onclick="sendResetPasswordLink()" value="Send Verification Link"></div>
+		</form>
+	</div>
+	<div class="flex flex-row justify-center pa4">
+		<button id=sign_in_button onclick="showSignInDiv()"
+			class="dn ph3 pv2 ma3 input-reset ba b--black bg-transparent grow pointer f6">Sign
+			in</button>
+		<button id=sign_up_button onclick="showSignUpDiv()"
+			class="ph3 pv2 ma3 input-reset ba b--black bg-transparent grow pointer f6">Sign
+			up</button>
+		<button id=forgot_pswd_button onclick="showForgotPasswordDiv()" class="ph3 pv2 ma3
+			input-reset ba b--black bg-transparent grow pointer f6">Forgot Password</button>
+	</div>
+</body>
+
 </html>
