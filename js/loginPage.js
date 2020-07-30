@@ -12,25 +12,8 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 if (firebase.auth().currentUser != null) {
-    //Directly move to the next page;
+    location.herf = "polls.html"
 }
-firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-        if (document.getElementById("ckbxRememberMe").checked) {
-            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-                .catch(function (error) {
-                    console.log(error.message);
-                    console.log(error.code);
-                });
-        } else {
-            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-                .catch(function (error) {
-                    console.log(error.message);
-                    console.log(error.code);
-                });
-        }
-    }
-});
 
 function showError(errormsg) {
     console.log("showError: " + errormsg);
@@ -51,7 +34,21 @@ function login() {
         .then(function () {
             if (firebase.auth().currentUser != null) {
                 console.log("Logged in");
+                if (document.getElementById("ckbxRememberMe").checked) {
+                    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                        .catch(function (error) {
+                            console.log(error.message);
+                            console.log(error.code);
+                        });
+                } else {
+                    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+                        .catch(function (error) {
+                            console.log(error.message);
+                            console.log(error.code);
+                        });
+                }
             }
+            location.href = "polls.html";
         })
         .catch(function (error) {
             var errorMessage = error.message;
@@ -62,7 +59,9 @@ function login() {
                 showError("User not found. Please sign up to continue");
             } else if (errorCode == "auth/invalid-email") {
                 showError("Invalid email");
-            } else {
+            } else if (errorCode == "auth/wrong-password"){
+                showError("Wrong Password");
+			} else {
                 showError("Some error has occured. Please try again.");
             }
         });
@@ -88,6 +87,7 @@ function signUp() {
                             console.log(errorMessage)
                         });
                 }
+                location.href = "polls.html";
             })
             .catch(function (error) {
                 var errorCode = error.code;
@@ -95,7 +95,7 @@ function signUp() {
                 console.log(error.message);
                 if (errorCode == "auth/email-already-in-use") {
                     showError("You are alredy registered. Please sign in to continue.");
-                } else if (errorCode == "auth/invalid-password") {
+                } else if (errorCode == "auth/weak-password") {
                     showError("Password must be a string with at least six characters.");
                 } else {
                     showError("Some error has occurred. Please try again.");
