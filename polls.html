@@ -1,10 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/tachyon.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+    <script src="js/classes.js"></script>
+    <script src="js/polls.js"></script>
     <title>Polling App | Polls</title>
 </head>
 
@@ -17,13 +23,9 @@
     </header>
     <div class="flex flex-row w-100 pa2">
         <select name="pollselect" id="pollselect"
-            class="pa1 br2 f4 ba b--transparent mh1 bg-dark-blue bg-black-70 white" style="flex-grow:1">
-            <option>India</option>
-            <option>India</option>
-            <option>India</option>
-            <option>India</option>
+            class="pa1 br2 f4 ba b--transparent mh1 bg-dark-blue bg-black-70 white" style="flex-grow:1" onchange="loadPollQuestions()">
         </select>
-        <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100" href="#0">Refresh List</a>
+        <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100" onclick="loadActivePolls()">Refresh List</a>
         <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100" href="#0">Add Poll</a>
     </div>
     <div id="current_poll" class="min-h-100 br3 ba b--dark-blue bg-white pa3 tc mh1">
