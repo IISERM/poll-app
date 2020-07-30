@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/tachyon.min.css">
+    <title>Polling App | Add Poll</title>
+</head>
+
+<body>
+    <div class="vh-100 flex flex-column justify-center pa3 avenir bg-washed-yellow">
+        <header class="flex justify-center tc w-100 bb">
+            <h1 class="f2 lh-title fw1 mt0">
+                Add Poll
+            </h1>
+            <a class="f5 link dim br2 ph3 pv2 mb2 dib white bg-dark-green fixed right-2" href="#0">Cancel</a>
+        </header>
+
+        <div class="w-100 flex flex-row justify-center items-center pt2 bg-washed-yellow z-1 ">
+            <label class="pa2 db fw6 lh-copy f6 mh1" for="title">Title</label>
+            <input class="pa2 mh1 input-reset f6 ba bg-transparent" type="text" name="title" id="title"
+                placeholder="Poll Title" required>
+            <label class="pa2 mh1 db fw6 lh-copy f6" for="desc">Description</label>
+            <input class="pa2 mh1 input-reset f6 ba bg-transparent flex-grow-1" type="text" name="desc" id="desc"
+                placeholder="Short Description; By who, for who, for what etc." required>
+            <input class="mh1" type="checkbox" id="anon" value="anon">
+            <label for="anon" class="lh-copy mh1">Anonymous Responses</label>
+        </div>
+
+        <div id="displayArea" class="br3 ba b--dark-blue bg-white pa3 tc mh1 mv2 flex-grow-1">
+            No questions added
+        </div>
+
+        <dialog id="addQDialog">
+            <form method="dialog">
+                <fieldset class="ba b--transparent ph0 mh0">
+                    <legend class="f3 fw6 ph0 mh0">Add Question</legend>
+                    <div class="mt3">
+                        <label class="db fw6 lh-copy f6" for="question">Question</label>
+                        <input class="pa2 input-reset ba bg-transparent w-100" type="text" name="question" id="question"
+                            placeholder="Question" required>
+                    </div>
+                    <div class="mt3">
+                        <label class="db fw6 lh-copy f6" for="qtype">Type</label>
+                        <input type="radio" id="scq" name="type" value="0">
+                        <label for="scq">Single Choice Question</label>
+                        <input type="radio" id="mcq" name="type" value="1">
+                        <label for="mcq">Multiple Choice Question</label>
+                        <input type="radio" id="long" name="type" value="2">
+                        <label for="long">Long Answer</label>
+                    </div>
+                    <div class="mt3" id="options">
+                        <label></label>
+                    </div>
+                </fieldset>
+                <input class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 dib bg-dark-green white"
+                    type="submit" value="Save Question">
+            </form>
+        </dialog>
+
+        <div class="w-100 flex flex-row justify-center pt2 bg-washed-yellow z-1 bt">
+            <a class="f6 link grow br2 ph3 pv2 mb2 dib black ba b--dark-green mh2"
+                onclick="document.getElementById('addQDialog').showModal()">Add Question</a>
+            <a class="f6 link grow br2 ph3 pv2 mb2 dib black ba b--dark-green mh2" href="#0">Remove Question</a>
+            <a class="f6 link grow br2 ph3 pv2 mb2 dib white bg-dark-green mh2" href="#0">Make Poll</a>
+        </div>
+    </div>
+</body>
+
+</html>
