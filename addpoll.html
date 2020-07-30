@@ -32,17 +32,18 @@
             No questions added
         </div>
 
-        <dialog id="addQDialog">
-            <form method="dialog">
+        <div id="addQDialog"
+            class="dn flex-column justify-center items-center vh-100 w-100 z-2 bg-black-50 fixed top-0 bottom-0 left-0 right-0">
+            <form method="dialog" class="bg-white ba b--black br2 pa3">
                 <fieldset class="ba b--transparent ph0 mh0">
                     <legend class="f3 fw6 ph0 mh0">Add Question</legend>
                     <div class="mt3">
                         <label class="db fw6 lh-copy f6" for="question">Question</label>
-                        <input class="pa2 input-reset ba bg-transparent w-100" type="text" name="question" id="question"
+                        <input class="pa2 input-reset ba bg-transparent" type="text" name="question" id="question"
                             placeholder="Question" required>
                     </div>
                     <div class="mt3">
-                        <label class="db fw6 lh-copy f6" for="qtype">Type</label>
+                        <label class="db fw6 lh-copy f6">Type</label>
                         <input type="radio" id="scq" name="type" value="0">
                         <label for="scq">Single Choice Question</label>
                         <input type="radio" id="mcq" name="type" value="1">
@@ -50,22 +51,35 @@
                         <input type="radio" id="long" name="type" value="2">
                         <label for="long">Long Answer</label>
                     </div>
-                    <div class="mt3" id="options">
-                        <label></label>
+                    <div class="mt3">
+                        <label class="db fw6 lh-copy f6">Options <span class="f7">(Ignore for Long
+                                Answer)</span></label>
+                        <div id="options" class="flex flex-column w-auto"></div>
+                        <button type="button" class="ph2 pv1 ba b--dark-green br1 bg-transparent dim pointer f4 dib mv1"
+                            onclick="addoption()">+</button>
                     </div>
                 </fieldset>
-                <input class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 dib bg-dark-green white"
-                    type="submit" value="Save Question">
+                <div class="flex flex-row justify-center">
+                    <input class="ph3 pv2 mh2 input-reset ba b--black grow pointer f5 dib bg-dark-green white"
+                        type="submit" value="Save Question">
+                    <input class="ph3 pv2 mh2 input-reset ba b--dark-green grow pointer f5 dib bg-transparent"
+                        type="reset" onclick="resetoptions()" value="Reset">
+                    <button class="ph3 pv2 mh2 input-reset ba b--dark-green grow pointer f5 dib bg-transparent"
+                        type="button" onclick="closedialog()">
+                        Close
+                    </button>
+                </div>
             </form>
-        </dialog>
+        </div>
 
         <div class="w-100 flex flex-row justify-center pt2 bg-washed-yellow z-1 bt">
-            <a class="f6 link grow br2 ph3 pv2 mb2 dib black ba b--dark-green mh2"
-                onclick="document.getElementById('addQDialog').showModal()">Add Question</a>
-            <a class="f6 link grow br2 ph3 pv2 mb2 dib black ba b--dark-green mh2" href="#0">Remove Question</a>
-            <a class="f6 link grow br2 ph3 pv2 mb2 dib white bg-dark-green mh2" href="#0">Make Poll</a>
+            <a class="f6 link grow br2 ph3 pv2 mb2 dib black ba b--dark-green mh2 pointer" onclick="opendialog()">Add
+                Question</a>
+            <a class="f6 link grow br2 ph3 pv2 mb2 dib black ba b--dark-green mh2 pointer">Remove Question</a>
+            <a class="f6 link grow br2 ph3 pv2 mb2 dib white bg-dark-green mh2 pointer">Make Poll</a>
         </div>
     </div>
+    <script src="js/addPoll.js"></script>
 </body>
 
 </html>
