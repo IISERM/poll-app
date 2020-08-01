@@ -10,69 +10,91 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
-var db=firebase.firestore();
+var db = firebase.firestore();
 var userGlobal;
-firebase.auth().onAuthStateChanged(function(user){
+firebase.auth().onAuthStateChanged(function (user) {
     userGLobal = user;
-    if(user){
-        if(!user.emailVerified){
-            displayMessage("You need to veirfy your email before you can cast your votes.");
-		}
+    if (user) {
+        if (!user.emailVerified) {
+            displayMessage("You need to verify your email before you can cast your votes.");
+        }
         loadActivePolls();
-	}
+    }
 });
 
-function loadActivePolls(){
+function loadActivePolls() {
     //The function logic would be different once the lists are there. There will be one document storing the names of active polls for each list. This function will query that document.
     //Write now, there is just one db having the name of all polls.
     var activePolls;
     var select = document.getElementById("pollselect");
     db.collection("VoterLists").doc("All")
         .get()
-        .then(function(doc) {
-            if (doc.exists){
+        .then(function (doc) {
+            if (doc.exists) {
                 activePolls = doc.get("Active Polls");
-                for(var i=0;i<activePolls.length;i++){
+                for (var i = 0; i < activePolls.length; i++) {
                     select.options[select.options.length] = new Option(activePolls[i], activePolls[i]);
-	            }
-			} else{
+                }
+            } else {
                 displayMessage("An unexpected error has occured. Report to developers");
                 console.log("The document doesn't exist");
-			}
-		})
-        .catch(function(error) {
+            }
+        })
+        .catch(function (error) {
             console.log(error.code);
             console.log(error.message);
             displayMessage("There was an error in fetching the polls. Please try again later.");
-		});
+        });
 }
 
-function loadPollQuestions(){
+function loadPollQuestions() {
     var collectionName = document.getElementById("pollselect").value;
     var alreadyVoted = db.collection("Polls").doc("redundant").collection(collectionName).doc("AlreadyVoted").get("alreadyVoted");
-    if(alreadyVoted.indexOf(user.uid) != -1){
+    if (alreadyVoted.indexOf(user.uid) != -1) {
         db.collection("Polls").doc("redundant").collection(collectionName).doc("PollContent")
             .withConverter(pollConverter)
             .get()
-            .then(function(doc){
-                if(!doc.exists){
+            .then(function (doc) {
+                if (!doc.exists) {
                     displayMessage("An unexpected error has occurred. Report to the developers.")
                     console.log("The document was not found.");
-				}else{
-                    poll = doc.data();
-                    //Do whatever you want with the object.
-				}
-			})
-            .catch(function(error){
+                } else {
+                    poll = doc.data()
+                    document.getElementById('current_poll').innerHTML = poll.getAsHTML()
+                }
+            })
+            .catch(function (error) {
                 console.log(error.code);
                 console.log(error.message);
                 displayMessage("There was an error in fetching the contents. Please try againg later.");
             });
-	} else{
-        //Just say that you have already voted. Preferably in the poll area.
-	}
+    } else {
+        document.getElementById('current_poll').innerHTML = "Yay! You've already voted!"
+    }
 }
 
-function displayMessage(msg){
+function displayMessage(msg) {
     //For displaying a message above the poll select dropdown.
 }
+
+/*
+poll = new Poll(
+    "Title", "Description", 0, false,
+    [new Question(
+        "This is a question with mcq.",
+        0,
+        ["Option1", "Option2", "Option3"]
+    ),
+    new Question(
+        "This is a question with scq.",
+        1,
+        ["Option1", "Option2", "Option3"]
+    ),
+    new Question(
+        "This is a question with lat.",
+        2,
+        []
+    ),
+    ])
+document.getElementById('current_poll').innerHTML = poll.getAsHTML()
+*/

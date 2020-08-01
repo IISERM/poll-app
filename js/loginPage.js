@@ -12,7 +12,7 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 if (firebase.auth().currentUser != null) {
-    location.herf = "polls.html"
+    location.href = "polls.html"
 }
 
 function showError(errormsg) {
@@ -59,9 +59,9 @@ function login() {
                 showError("User not found. Please sign up to continue");
             } else if (errorCode == "auth/invalid-email") {
                 showError("Invalid email");
-            } else if (errorCode == "auth/wrong-password"){
+            } else if (errorCode == "auth/wrong-password") {
                 showError("Wrong Password");
-			} else {
+            } else {
                 showError("Some error has occured. Please try again.");
             }
         });

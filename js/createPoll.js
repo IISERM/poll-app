@@ -8,33 +8,92 @@ const firebaseConfig = {
     appId: "1:275134846597:web:0865c7c0a10dc59a1ffbec",
     measurementId: "G-QMNV123VEJ"
 };
+const title = document.getElementById("title")
+const desc = document.getElementById("desc")
+const anon = document.getElementById("anon")
+
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 
-function writePoll(){
-    Poll poll=getPoll();
+var poll = new Poll("", "", 0, false, [])
+
+function uploadPoll() {
     db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PollContent")
         .withConverter(pollConverter)
         .set(poll)
-        .then(function(doc){
+        .then(function (doc) {
             displayMessage("The Poll has been added.");
-		})
-        .catch(function(error){
+        })
+        .catch(function (error) {
             console.log(error.code);
             console.log(error.message);
             displayMessage("There was an error in adding the poll.");
-		});
+        });
 }
 
-function getPoll(){
-    var formElems = document.forms("pollForm").elements;
-    for(i=0;i<formElems.length;i++){
-        
-	}
-    //return poll;
+function updatePoll() {
+    poll.topic = title.value
+    poll.meantFor = desc.value
+    poll.isAnonymous = anon.checked
+    updateUI()
 }
 
-function displayMessage(str){
-    //Display the message at an appropriate place
+function updateUI() {
+    document.getElementById('displayArea').innerHTML = poll.getAsHTML()
+}
+
+function displayMessage(str) {
+    console.log(str)
+}
+
+function resetoptions() {
+    const options = document.getElementById("options")
+    while (options.firstChild) {
+        options.removeChild(options.lastChild);
+    }
+}
+function addoption() {
+    new_input = document.createElement("input")
+    new_input.className = 'mv1 pa2 input-reset ba bg-transparent'
+    new_input.type = 'text'
+    new_input.name = 'options'
+    new_input.placeholder = 'Option'
+    new_input.required = true
+    document.getElementById("options").appendChild(new_input)
+}
+function opendialog() {
+    dia = document.getElementById('addQDialog')
+    dia.classList.remove('dn')
+    dia.classList.add('flex')
+}
+function closedialog() {
+    dia = document.getElementById('addQDialog')
+    dia.classList.remove('flex')
+    dia.classList.add('dn')
+}
+function addQuestion() {
+    var title = document.getElementById('question').value
+    var ele = document.getElementsByName('type');
+    var type = 0
+    for (var i = 0; i < ele.length; i++) {
+        if (ele[i].checked) {
+            type = ele[i].value
+        }
+    }
+    var options = []
+    ele = document.getElementsByName('options');
+    for (var i = 0; i < ele.length; i++) {
+        options.push(ele[i].value)
+    }
+    console.log(options);
+    poll.questions.push(new Question(
+        title,
+        type,
+        options
+    ))
+    document.getElementById("Qform").reset()
+    closedialog()
+    updateUI()
+    return false
 }

@@ -8,3 +8,8 @@
 .hidden {
     visibility: hidden;
 }
+
+.resize-vertical {
+    resize: vertical;
+    min-height: 8em;
+}
