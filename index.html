@@ -71,22 +71,21 @@
 						placeholder="IISER Email ID" required id="forgotPasswordEmail">
 				</div>
 			</fieldset>
-			<div class="mt3"><input
-					class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 bg-dark-green white"
-					type="submit" onclick="sendResetPasswordLink()" value="Send Verification Link"></div>
+			<div class="mt3">
+				<input class="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 bg-dark-green white"
+					type="submit" onclick="sendResetPasswordLink()" value="Send Verification Link">
+			</div>
 		</form>
 	</div>
 	<div class="flex flex-row justify-center pa4">
 		<button id=sign_in_button onclick="showSignInDiv()"
-			class="dn ph3 pv2 ma3 input-reset ba b--black bg-transparent grow pointer f6">Sign
-			in</button>
+			class="dn ph3 pv2 ma3 input-reset ba b--black bg-transparent grow pointer f6">Sign in</button>
 		<button id=sign_up_button onclick="showSignUpDiv()"
-			class="ph3 pv2 ma3 input-reset ba b--black bg-transparent grow pointer f6">Sign
-			up</button>
+			class="ph3 pv2 ma3 input-reset ba b--black bg-transparent grow pointer f6">Sign up</button>
 		<button id=forgot_pswd_button onclick="showForgotPasswordDiv()" class="ph3 pv2 ma3
 			input-reset ba b--black bg-transparent grow pointer f6">Forgot Password</button>
 	</div>
-	<div id="errorDiv" class="flex items-center justify-center pa2 bg-lightest-blue navy w-100 errordiv">
+	<div id="errorDiv" class="flex items-center justify-center pa2 bg-lightest-blue navy w-100 hidden">
 		<svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
 			<title>info icon</title>
 			<path

@@ -1,3 +1,15 @@
-.errordiv {
+.flex-grow-0 {
+    flex-grow: 0;
+}
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+.hidden {
     visibility: hidden;
+}
+
+.resize-vertical {
+    resize: vertical;
+    min-height: 8em;
 }
