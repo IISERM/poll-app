@@ -13,3 +13,8 @@
     resize: vertical;
     min-height: 8em;
 }
+
+.vp-center {
+    left: 0;
+    right: 0;
+}

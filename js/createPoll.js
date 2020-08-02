@@ -44,7 +44,13 @@ function updateUI() {
 }
 
 function displayMessage(str) {
-    console.log(str)
+    var div = document.getElementById("errorDiv")
+    var span = document.getElementById("errorMsg")
+    span.innerHTML = msg
+    div.classList.remove("hidden")
+    setTimeout(() => {
+        div.classList.add("hidden")
+    }, 2000);
 }
 
 function resetoptions() {

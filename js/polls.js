@@ -74,7 +74,13 @@ function loadPollQuestions() {
 }
 
 function displayMessage(msg) {
-    //For displaying a message above the poll select dropdown.
+    var div = document.getElementById("errorDiv")
+    var span = document.getElementById("errorMsg")
+    span.innerHTML = msg
+    div.classList.remove("hidden")
+    setTimeout(() => {
+        div.classList.add("hidden")
+    }, 2000);
 }
 
 /*
