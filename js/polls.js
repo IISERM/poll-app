@@ -19,7 +19,9 @@ firebase.auth().onAuthStateChanged(function (user) {
             displayMessage("You need to verify your email before you can cast your votes.");
         }
         loadActivePolls();
-    }
+    } else {
+        window.location = "index.html";
+	}
 });
 
 function loadActivePolls() {
@@ -27,7 +29,7 @@ function loadActivePolls() {
     //Write now, there is just one db having the name of all polls.
     var activePolls;
     var select = document.getElementById("pollselect");
-    db.collection("VoterLists").doc("All")
+    db.collection("ListWiseActivePolls").doc("All")
         .get()
         .then(function (doc) {
             if (doc.exists) {
@@ -49,32 +51,47 @@ function loadActivePolls() {
 
 function loadPollQuestions() {
     var collectionName = document.getElementById("pollselect").value;
-    var alreadyVoted = db.collection("Polls").doc("redundant").collection(collectionName).doc("AlreadyVoted").get("alreadyVoted");
-    if (alreadyVoted.indexOf(user.uid) != -1) {
-        db.collection("Polls").doc("redundant").collection(collectionName).doc("PollContent")
-            .withConverter(pollConverter)
-            .get()
-            .then(function (doc) {
-                if (!doc.exists) {
-                    displayMessage("An unexpected error has occurred. Report to the developers.")
-                    console.log("The document was not found.");
-                } else {
-                    poll = doc.data()
-                    document.getElementById('current_poll').innerHTML = poll.getAsHTML()
-                }
-            })
-            .catch(function (error) {
-                console.log(error.code);
-                console.log(error.message);
-                displayMessage("There was an error in fetching the contents. Please try againg later.");
-            });
-    } else {
-        document.getElementById('current_poll').innerHTML = "Yay! You've already voted!"
+    if(collectionName != "---Select a Poll---"){
+        var alreadyVoted = hasAlreadyVoted();
+        if (!alreadyVoted) {
+            db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
+                .withConverter(pollConverter)
+                .get()
+                .then(function (doc) {
+                    if (!doc.exists) {
+                        displayMessage("An unexpected error has occurred. Report to the developers.");
+                        console.log("The document was not found.");
+                    } else {
+                        poll = doc.data();
+                        document.getElementById('current_poll').innerHTML = poll.getAsHTML();
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                    displayMessage("There was an error in fetching the contents. Please try againg later.");
+                });
+        } else {
+            document.getElementById('current_poll').innerHTML = "Yay! You've already voted!"
+        }
     }
 }
 
 function displayMessage(msg) {
     //For displaying a message above the poll select dropdown.
+}
+
+function hasAlreadyVoted() {
+    return false;
+}
+
+function signOut() {
+    firebase.auth().signOut()
+        .catch(function(error) {
+            displayMessage("Couldn't sign you out.");
+            console.log(error.code);
+            console.log(error.message);
+		});
 }
 
 /*

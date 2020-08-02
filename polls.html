@@ -16,12 +16,14 @@
 <body class="pa3 avenir bg-washed-yellow">
     <header class="flex justify-center tc w-100 bb mb2">
         <h1 class="f1 lh-title fw1 mt0"> Polls </h1>
-        <a class="f5 link dim br2 ph3 pv2 mb2 dib white bg-dark-green fixed right-2" href="#0">Sign Out</a>
+        <a class="f5 link dim br2 ph3 pv2 mb2 dib white bg-dark-green fixed right-2" onclick="signOut()" href="#0">Sign Out</a>
     </header>
     <div class="flex flex-row w-100 pa2">
         <select name="pollselect" id="pollselect"
             class="pa1 br2 f4 ba b--transparent mh1 bg-dark-blue bg-black-70 white" style="flex-grow:1"
-            onchange="loadPollQuestions()"></select>
+            onchange="loadPollQuestions()">
+            <option>---Select a Poll---</option>
+        </select>
         <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100 pointer" onclick="loadActivePolls()">Refresh
             List</a>
         <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100 pointer" href="addpoll.html">Add Poll</a>
