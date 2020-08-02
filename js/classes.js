@@ -1,24 +1,18 @@
 class Poll {
-	constructor(topic, meantFor, type, isAnonymous, questions) {
+	constructor(topic, description, type, isAnonymous, questions) {
 		this.topic = topic;
-		this.meantFor = meantFor;
+		this.description = description;
 		this.type = type;
 		this.isAnonymous = isAnonymous;
 		this.questions = questions;
-	}
-	getQuestions() {
-		var list = []
-		var x;
-		for (x of this.questions) {
-			list[list.length] = x.getData();
-		}
-		return list;
 	}
 	getAsHTML() {
 		var qs = ""
 		var arrayLength = this.questions.length;
 		for (var i = 0; i < arrayLength; i++) {
-			qs = qs + this.questions[i].getAsHTML(i)
+			//TODO Fix this
+			//var qsObj = new Question(this.questions[i].questionStr, this.questions[i].type, this.questions[i].options);
+			qs = qs + this.questions[i].getAsHTML();
 		}
 		var html =
 			`
@@ -28,7 +22,7 @@ class Poll {
 						${this.topic}
 					</h1>
 					<h1 class="f4 lh-title fw1 mv1">
-						${this.meantFor}
+						${this.description}
 					</h1>
 					${this.isAnonymous ? '<h1 class="f5 lh-title fw1 mv1 green">This poll is anonymous</h1>' : '<h1 class="f5 lh-title fw1 mv1 red">This poll is not anonymous</h1>'}
 				</header>
@@ -42,15 +36,15 @@ pollConverter = {
 	toFirestore: function (poll) {
 		return {
 			topic: poll.topic,
-			meantFor: poll.meantFor,
+			description: poll.description,
 			type: poll.type,
 			isAnonymous: poll.isAnonymous,
-			questions: poll.getQuestions()
+			questions: poll.questions.map(q => questionConverter.toFirestore(q))
 		}
 	},
 	fromFirestore: function (snapshot, options) {
 		const data = snapshot.data(options);
-		return new Poll(data.topic, data.meantFor, data.type, data.isAnonymous, data.questions)
+		return new Poll(data.topic, data.description, data.type, data.isAnonymous, data.questions.map(q => questionConverter.toObject(q)))
 	}
 }
 
@@ -59,13 +53,6 @@ class Question {
 		this.questionStr = questionStr;
 		this.type = type;
 		this.options = options;
-	}
-	getData() {
-		return {
-			questionStr: this.questionStr,
-			type: this.type,
-			options: this.options
-		};
 	}
 	getOptionsAsHTML(question_id) {
 		var html = ""
@@ -110,5 +97,8 @@ questionConverter = {
 	fromFirestore: function (snapshot, options) {
 		const data = snapshot.data(options);
 		return new Question(data.questionStr, data.type, data.options)
+	},
+	toObject: function (question){
+		return new Question(question.questionStr, question.type, question.options)
 	}
 }
