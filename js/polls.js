@@ -13,7 +13,7 @@ firebase.analytics();
 var db = firebase.firestore();
 var userGlobal;
 firebase.auth().onAuthStateChanged(function (user) {
-    userGLobal = user;
+    userGlobal = user;
     if (user) {
         if (!user.emailVerified) {
             displayMessage("You need to verify your email before you can cast your votes.");
@@ -21,9 +21,8 @@ firebase.auth().onAuthStateChanged(function (user) {
         loadActivePolls();
     } else {
         window.location = "index.html";
-	}
+    }
 });
-
 function loadActivePolls() {
     //The function logic would be different once the lists are there. There will be one document storing the names of active polls for each list. This function will query that document.
     //Write now, there is just one db having the name of all polls.
@@ -51,7 +50,7 @@ function loadActivePolls() {
 
 function loadPollQuestions() {
     var collectionName = document.getElementById("pollselect").value;
-    if(collectionName != "---Select a Poll---"){
+    if (collectionName != "---Select a Poll---") {
         var alreadyVoted = hasAlreadyVoted();
         if (!alreadyVoted) {
             db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
@@ -93,11 +92,13 @@ function hasAlreadyVoted() {
 
 function signOut() {
     firebase.auth().signOut()
-        .catch(function(error) {
+        .then(function () {
+            location.href = "index.html"
+        }, function (error) {
             displayMessage("Couldn't sign you out.");
             console.log(error.code);
             console.log(error.message);
-		});
+        });
 }
 
 /*

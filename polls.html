@@ -6,20 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/tachyon.min.css">
     <link rel="stylesheet" href="css/mycss.css">
-    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
     <title>Polling App | Polls</title>
 </head>
 
 <body>
-    <div class="min-vh-100 pa3 avenir bg-washed-yellow flex flex-column">
-        <header class="flex justify-center tc w-100 bb mb2">
+    <div class="min-vh-100 pa3 avenir bg-washed-yellow flex flex-wrap flex-column">
+        <header class="flex flex-wrap justify-center tc w-100 bb mb2">
             <h1 class="f1 lh-title fw1 mt0"> Polls </h1>
-            <a class="f5 link dim br2 ph3 pv2 mb2 dib white bg-dark-green fixed right-2" href="#0">Sign Out</a>
+            <a class="f5 link dim br2 ph3 pv2 mb2 dib white bg-dark-green fixed right-2 pointer"
+                onclick="signOut()">Sign Out</a>
         </header>
-        <div class="flex flex-row w-100 pa2">
+        <div class="flex flex-wrap flex-row w-100 pa2">
             <select name="pollselect" id="pollselect"
                 class="pa1 br2 f4 ba b--transparent mh1 bg-dark-blue bg-black-70 white" style="flex-grow:1"
                 onchange="loadPollQuestions()">
@@ -30,10 +27,10 @@
             <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100 pointer" href="addpoll.html">Add Poll</a>
         </div>
         <div id="current_poll"
-            class="min-h-100 br3 ba b--dark-blue bg-white pa3 tc mh1 flex flex-column justify-start items-center flex-grow-1">
+            class="min-h-100 br3 ba b--dark-blue bg-white pa3 tc mh1 flex flex-wrap flex-column justify-start items-center flex-grow-1">
             No poll selected</div>
     </div>
-    <div id="errorDiv" class="fixed bottom-2 z-1 flex flex-row justify-center vp-center hidden">
+    <div id="errorDiv" class="fixed bottom-2 z-1 flex flex-wrap flex-row justify-center vp-center hidden">
         <div class="pa2 bg-lightest-blue black ba br-pill">
             <svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
                 <title>info icon</title>
@@ -44,6 +41,10 @@
             <span class="lh-title ml3" id="errorMsg"></span>
         </div>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/polls.js"></script>
 </body>

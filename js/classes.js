@@ -12,7 +12,7 @@ class Poll {
 		for (var i = 0; i < arrayLength; i++) {
 			//TODO Fix this
 			//var qsObj = new Question(this.questions[i].questionStr, this.questions[i].type, this.questions[i].options);
-			qs = qs + this.questions[i].getAsHTML();
+			qs = qs + this.questions[i].getAsHTML(i);
 		}
 		var html =
 			`
@@ -63,10 +63,10 @@ class Question {
 		}
 		for (var i = 0; i < arrayLength; i++) {
 			html = html + ` <tr class="stripe-dark">
-								<td class="pa3 w-10">
+								<td class="pa3 w-10 tc v-mid">
 									<input type="${inp_type}" id="${question_id + "_" + i}" name="type" value="${i}">
 								</td>
-								<td class="pa3 w-90"><label for="${question_id + "_" + i}">${this.options[i]}</label></td>
+								<td class="pa3 w-90 tc v-mid"><label class="f5" for="${question_id + "_" + i}">${this.options[i]}</label></td>
 							</tr>`
 		}
 		return html
@@ -98,7 +98,7 @@ questionConverter = {
 		const data = snapshot.data(options);
 		return new Question(data.questionStr, data.type, data.options)
 	},
-	toObject: function (question){
+	toObject: function (question) {
 		return new Question(question.questionStr, question.type, question.options)
 	}
 }

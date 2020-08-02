@@ -23,12 +23,12 @@ function uploadPoll() {
     var pollListDb = db.collection("ListWiseActivePolls").doc("All");
     var batch = db.batch();
     batch.set(pollDb, poll);
-    batch.update(pollListDb, {"Active Polls": firebase.firestore.FieldValue.arrayUnion(poll.topic)});
+    batch.update(pollListDb, { "Active Polls": firebase.firestore.FieldValue.arrayUnion(poll.topic) });
     batch.commit()
-        .then(function() {
+        .then(function () {
             displayMessage("The Poll has been added.");
-		})
-        .catch(function(error) {
+        })
+        .catch(function (error) {
             console.log(error.code);
             console.log(error.message);
             displayMessage("There was an error in adding the poll.");
@@ -61,6 +61,10 @@ function resetoptions() {
     while (options.firstChild) {
         options.removeChild(options.lastChild);
     }
+}
+function removeLastQuestion() {
+    poll.questions.pop()
+    updateUI()
 }
 function addoption() {
     new_input = document.createElement("input")
