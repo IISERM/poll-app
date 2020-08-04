@@ -10,24 +10,27 @@
 </head>
 
 <body>
-    <div class="min-vh-100 pa3 avenir bg-washed-yellow flex flex-wrap flex-column">
+    <div class="min-vh-100 pa1 pa3-ns avenir bg-washed-yellow flex flex-wrap flex-column">
         <header class="flex flex-wrap justify-center tc w-100 bb mb2">
             <h1 class="f1 lh-title fw1 mt0"> Polls </h1>
-            <a class="f5 link dim br2 ph3 pv2 mb2 dib white bg-dark-green fixed right-2 pointer"
+            <a class="f7 f5-ns link dim br2 ph3 pv2 dib white bg-dark-green fixed top-1 top-2-ns right-1 right-2-ns pointer"
                 onclick="signOut()">Sign Out</a>
         </header>
-        <div class="flex flex-wrap flex-row w-100 pa2">
+        <div class="flex flex-wrap flex-column flex-row-ns justify-center w-100 pa2">
             <select name="pollselect" id="pollselect"
-                class="pa1 br2 f4 ba b--transparent mh1 bg-dark-blue bg-black-70 white" style="flex-grow:1"
+                class="pa1 br2 f4 ba b--transparent mh1 mv1 mv0-ns bg-dark-blue bg-black-70 white" style="flex-grow:1"
                 onchange="loadPollQuestions()">
-                <option>---Select a Poll---</option>
+                <option class="f6 f4-ns">---Select a Poll---</option>
             </select>
-            <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100 pointer" onclick="loadActivePolls()">Refresh
-                List</a>
-            <a class="f4 link dim br2 ba ph3 pv2 dib dark-blue mh1 h-100 pointer" href="addpoll.html">Add Poll</a>
+            <div class="flex flex-row justify-center">
+                <a class="f5 f4-ns link dim br2 ba ph3 pv2 dib dark-blue mh1 mv1 mv0-ns h-100 pointer"
+                    onclick="loadActivePolls()">Refresh List</a>
+                <a class="f5 f4-ns link dim br2 ba ph3 pv2 dib dark-blue mh1 mv1 mv0-ns h-100 pointer"
+                    href="addpoll.html">Add Poll</a>
+            </div>
         </div>
         <div id="current_poll"
-            class="min-h-100 br3 ba b--dark-blue bg-white pa3 tc mh1 flex flex-wrap flex-column justify-start items-center flex-grow-1">
+            class="min-h-100 br3 ba b--dark-blue bg-white pa1 pa3-ns tc mh1 flex flex-wrap flex-column justify-start items-center flex-grow-1">
             No poll selected</div>
     </div>
     <div id="errorDiv" class="fixed bottom-2 z-1 flex flex-wrap flex-row justify-center vp-center hidden">

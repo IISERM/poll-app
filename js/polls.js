@@ -35,6 +35,7 @@ function loadActivePolls() {
                 activePolls = doc.get("Active Polls");
                 for (var i = 0; i < activePolls.length; i++) {
                     select.options[select.options.length] = new Option(activePolls[i], activePolls[i]);
+                    select.options[select.options.length - 1].className = "f6 f4-ns pa1"
                 }
             } else {
                 displayMessage("An unexpected error has occured. Report to developers");
