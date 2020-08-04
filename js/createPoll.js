@@ -23,12 +23,31 @@ function uploadPoll() {
     var pollListDb = db.collection("ListWiseActivePolls").doc("All");
     var batch = db.batch();
     batch.set(pollDb, poll);
-    batch.update(pollListDb, { "Active Polls": firebase.firestore.FieldValue.arrayUnion(poll.topic) });
+    batch.update(pollListDb, {"Active Polls": firebase.firestore.FieldValue.arrayUnion(poll.topic)});
+    if(poll.isAnonymous) {
+        var pollObj = {};
+        var i;
+        for(i=0; i<poll.questions.length; i++) {
+            var qtype = poll.questions[i].type;
+            var optionsObj = {};
+            if(qtype == 0 || qtype == 1) {
+                var j;
+                for(j=0; j<poll.questions[i].options.length; j++) {
+                    optionsObj[poll.questions[i].options[j]]=0;
+				}
+                pollObj[poll.questions[i].questionStr] = optionsObj;
+			} else {
+                pollObj[poll.questions[i].questionStr] = {"Responses": []};
+			}
+		}
+        batch.set(db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PollResults"), pollObj)
+	}
+    batch.set(db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PeopleWhoHaveAlreadyVoted"), {"AlreadyVoted": []});
     batch.commit()
-        .then(function () {
+        .then(function() {
             displayMessage("The Poll has been added.");
-        })
-        .catch(function (error) {
+		})
+        .catch(function(error) {
             console.log(error.code);
             console.log(error.message);
             displayMessage("There was an error in adding the poll.");
@@ -49,7 +68,7 @@ function updateUI() {
 function displayMessage(str) {
     var div = document.getElementById("errorDiv")
     var span = document.getElementById("errorMsg")
-    span.innerHTML = msg
+    span.innerHTML = str
     div.classList.remove("hidden")
     setTimeout(() => {
         div.classList.add("hidden")

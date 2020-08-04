@@ -11,9 +11,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
-var userGlobal;
+var pollGlobal;
+
 firebase.auth().onAuthStateChanged(function (user) {
-    userGlobal = user;
     if (user) {
         if (!user.emailVerified) {
             displayMessage("You need to verify your email before you can cast your votes.");
@@ -24,7 +24,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 function loadActivePolls() {
-    //The function logic would be different once the lists are there. There will be one document storing the names of active polls for each list. This function will query that document.
+    //The function logic would be different once the lists are there.
     //Write now, there is just one db having the name of all polls.
     var activePolls;
     var select = document.getElementById("pollselect");
@@ -52,28 +52,9 @@ function loadActivePolls() {
 function loadPollQuestions() {
     var collectionName = document.getElementById("pollselect").value;
     if (collectionName != "---Select a Poll---") {
-        var alreadyVoted = hasAlreadyVoted();
-        if (!alreadyVoted) {
-            db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
-                .withConverter(pollConverter)
-                .get()
-                .then(function (doc) {
-                    if (!doc.exists) {
-                        displayMessage("An unexpected error has occurred. Report to the developers.");
-                        console.log("The document was not found.");
-                    } else {
-                        poll = doc.data();
-                        document.getElementById('current_poll').innerHTML = poll.getAsHTML();
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error.code);
-                    console.log(error.message);
-                    displayMessage("There was an error in fetching the contents. Please try againg later.");
-                });
-        } else {
-            document.getElementById('current_poll').innerHTML = "Yay! You've already voted!"
-        }
+        hasAlreadyVoted(collectionName);
+    } else {
+        pollGlobal = null;
     }
 }
 
@@ -87,19 +68,130 @@ function displayMessage(msg) {
     }, 2000);
 }
 
-function hasAlreadyVoted() {
-    return false;
+function hasAlreadyVoted(collectionName) {
+    var alreadyVotedList = null;
+    db.collection("Polls").doc("Redundant").collection(collectionName).doc("PeopleWhoHaveAlreadyVoted")
+        .get()
+        .then(function(doc){
+            alreadyVotedList = doc.data().AlreadyVoted;
+            if(alreadyVotedList.indexOf(firebase.auth().currentUser.uid) != -1) {
+                document.getElementById('current_poll').innerHTML = "Yay! You've already voted!";
+                db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
+                .withConverter(pollConverter)
+                .get()
+                .then(function (doc) {
+                    if (!doc.exists) {
+                        displayMessage("An unexpected error has occurred. Report to the developers.");
+                        console.log("The document was not found.");
+                    } else {
+                        pollGlobal = doc.data();
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                    displayMessage("There was an error in fetching the contents. Please try againg later.");
+                });
+	        } else {
+                db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
+                .withConverter(pollConverter)
+                .get()
+                .then(function (doc) {
+                    if (!doc.exists) {
+                        displayMessage("An unexpected error has occurred. Report to the developers.");
+                        console.log("The document was not found.");
+                    } else {
+                        pollGlobal = doc.data();
+                        document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                    displayMessage("There was an error in fetching the contents. Please try againg later.");
+                });
+	        }
+		})
+        .catch(function(error) {
+            displayMessage("There was an error. Please retry.");
+            console.log(error.code, error.message);
+		});
+}
+
+function submitPollResponse() {
+    var numOfQuestions = pollGlobal.questions.length;
+    var i;
+    var dbRef = db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults");
+    if(pollGlobal.isAnonymous){
+        var batch = db.batch();
+        var responseMap = {};
+        for(i=0; i<numOfQuestions; i++) {
+            var qType = pollGlobal.questions[i].type;
+            if (qType == 0) {
+                var j;
+                for(j=0; j<pollGlobal.questions[i].options.length; j++) {
+                    if(document.getElementById("question_"+i+"_"+j).checked) {
+                        responseMap[pollGlobal.questions[i].questionStr+"."+pollGlobal.questions[i].options[j]] = firebase.firestore.FieldValue.increment(1);
+                        break;
+				    }
+			    }
+		    } else if (qType == 1) {
+                var j;
+                for(j=0; j<pollGlobal.questions[i].options.length; j++) {
+                    if(document.getElementById("question_"+i+"_"+j).checked) {
+                        responseMap[pollGlobal.questions[i].questionStr+"."+pollGlobal.questions[i].options[j]] = firebase.firestore.FieldValue.increment(1);
+				    }
+			    }
+		    } else if (qType == 2) {
+                var resp = document.getElementById("question_"+i).value;
+                responseMap[pollGlobal.questions[i].questionStr+".Responses"] = firebase.firestore.FieldValue.arrayUnion(resp);
+		    } else {
+                console.log("Something is seriously wrong.");
+		    }
+	    }
+        batch.update(dbRef, responseMap);
+        batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), {"AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid)});
+        batch.commit()
+            .then(function() {
+                displayMessage("Your response has been recorded.");
+                window.location.reload();
+		    })
+            .catch(function(error) {
+                displayMessage("Your response couldn't be recorded");
+                console.log(error.code, error.message);
+		    });
+    }
+}
+
+function getPollResults () {
+    db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults")
+        .get()
+        .then (function (doc) {
+            if (!doc.exists) {
+                displayMessage("An unexpected error has occured. Report to the developers");
+			} else {
+                var res = doc.data();
+                var data = new Blob([JSON.stringify(res, null, 2)], {type: 'application/json'});
+                var url = window.URL.createObjectURL(data);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = pollGlobal.topic + " Results.txt";
+                a.click();
+			}
+		})
+        .catch (function (error) {
+            displayMessage("An error message has occurred.");
+            console.log(error.code, error.message);
+		});
 }
 
 function signOut() {
     firebase.auth().signOut()
-        .then(function () {
-            location.href = "index.html"
-        }, function (error) {
+        .catch(function(error) {
             displayMessage("Couldn't sign you out.");
             console.log(error.code);
             console.log(error.message);
-        });
+		});
 }
 
 /*

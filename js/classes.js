@@ -10,8 +10,6 @@ class Poll {
 		var qs = ""
 		var arrayLength = this.questions.length;
 		for (var i = 0; i < arrayLength; i++) {
-			//TODO Fix this
-			//var qsObj = new Question(this.questions[i].questionStr, this.questions[i].type, this.questions[i].options);
 			qs = qs + this.questions[i].getAsHTML(i);
 		}
 		var html =
@@ -73,7 +71,8 @@ class Question {
 	}
 	getAsHTML(qid) {
 		var questionid = "question_" + qid
-		var input_html = this.type == 0 || this.type == 1 ? '<tbody class="lh-copy"\n>' + this.getOptionsAsHTML(questionid) + '</tbody >' : `<textarea name="${questionid}" id="ta" class="db border-box hover-black w-75 ba b--black-20 pa2 br2 mb2 resize-vertical" rows=4 placeholder="Your response"></textarea>`
+
+		var input_html = this.type == 0 || this.type == 1 ? '<tbody class="lh-copy"\n>' + this.getOptionsAsHTML(questionid) + '</tbody >' : `<textarea name="ta" id="${questionid}" class="db border-box hover-black w-75 ba b--black-20 pa2 br2 mb2 resize-vertical" rows=4 placeholder="Your response"></textarea>`
 		var html = `<div class="flex flex-column w-100 ba b--dark-blue br2 pa1 pv3 pa4-ns mv2 bg-washed-blue items-center justify-center">
 					<h1 class="f4 f3-ns fw1 mb2 mb4-ns mt0">
 						${this.questionStr}
