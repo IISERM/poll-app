@@ -13,7 +13,6 @@ const desc = document.getElementById("desc")
 const anon = document.getElementById("anon")
 
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         if (!user.emailVerified) {

@@ -9,12 +9,11 @@ const firebaseConfig = {
     measurementId: "G-QMNV123VEJ"
 };
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
-firebase.auth().onAuthStateChanged(function(user) {
-    if(user){
-        window.location="polls.html";
-	}
+firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+        window.location = "polls.html";
+    }
 });
 
 function showError(errormsg) {
@@ -34,9 +33,9 @@ function login() {
     var password = document.getElementById("passwordLogin").value;
     var persistenceMode = document.getElementById("ckbxRememberMe").checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
     firebase.auth().setPersistence(persistenceMode)
-        .then(function() {
+        .then(function () {
             firebase.auth().signInWithEmailAndPassword(email, password)
-                .then(function() {
+                .then(function () {
                     console.log("Logged in.");
                 })
                 .catch(function (error) {
@@ -57,7 +56,7 @@ function login() {
         })
         .catch(function (error) {
             console.log(error.code, error.message);
-		});
+        });
 }
 
 function signUp() {
