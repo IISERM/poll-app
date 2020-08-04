@@ -14,6 +14,16 @@ const anon = document.getElementById("anon")
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+        if (!user.emailVerified) {
+            displayMessage("You need to verify your email before you can cast your votes.");
+        }
+        loadActivePolls();
+    } else {
+        window.location = "index.html";
+    }
+});
 var db = firebase.firestore();
 
 var poll = new Poll("", "", 0, false, [])
@@ -23,31 +33,31 @@ function uploadPoll() {
     var pollListDb = db.collection("ListWiseActivePolls").doc("All");
     var batch = db.batch();
     batch.set(pollDb, poll);
-    batch.update(pollListDb, {"Active Polls": firebase.firestore.FieldValue.arrayUnion(poll.topic)});
-    if(poll.isAnonymous) {
+    batch.update(pollListDb, { "Active Polls": firebase.firestore.FieldValue.arrayUnion(poll.topic) });
+    if (poll.isAnonymous) {
         var pollObj = {};
         var i;
-        for(i=0; i<poll.questions.length; i++) {
+        for (i = 0; i < poll.questions.length; i++) {
             var qtype = poll.questions[i].type;
             var optionsObj = {};
-            if(qtype == 0 || qtype == 1) {
+            if (qtype == 0 || qtype == 1) {
                 var j;
-                for(j=0; j<poll.questions[i].options.length; j++) {
-                    optionsObj[poll.questions[i].options[j]]=0;
-				}
+                for (j = 0; j < poll.questions[i].options.length; j++) {
+                    optionsObj[poll.questions[i].options[j]] = 0;
+                }
                 pollObj[poll.questions[i].questionStr] = optionsObj;
-			} else {
-                pollObj[poll.questions[i].questionStr] = {"Responses": []};
-			}
-		}
+            } else {
+                pollObj[poll.questions[i].questionStr] = { "Responses": [] };
+            }
+        }
         batch.set(db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PollResults"), pollObj)
-	}
-    batch.set(db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PeopleWhoHaveAlreadyVoted"), {"AlreadyVoted": []});
+    }
+    batch.set(db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": [] });
     batch.commit()
-        .then(function() {
+        .then(function () {
             displayMessage("The Poll has been added.");
-		})
-        .catch(function(error) {
+        })
+        .catch(function (error) {
             console.log(error.code);
             console.log(error.message);
             displayMessage("There was an error in adding the poll.");
