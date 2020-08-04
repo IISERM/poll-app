@@ -12,6 +12,7 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 var pollGlobal;
+
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         if (!user.emailVerified) {
@@ -74,7 +75,22 @@ function hasAlreadyVoted(collectionName) {
             alreadyVotedList = doc.data().AlreadyVoted;
             if(alreadyVotedList.indexOf(firebase.auth().currentUser.uid) != -1) {
                 document.getElementById('current_poll').innerHTML = "Yay! You've already voted!";
-                pollGlobal = null;
+                db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
+                .withConverter(pollConverter)
+                .get()
+                .then(function (doc) {
+                    if (!doc.exists) {
+                        displayMessage("An unexpected error has occurred. Report to the developers.");
+                        console.log("The document was not found.");
+                    } else {
+                        pollGlobal = doc.data();
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                    displayMessage("There was an error in fetching the contents. Please try againg later.");
+                });
 	        } else {
                 db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
                 .withConverter(pollConverter)
@@ -83,7 +99,6 @@ function hasAlreadyVoted(collectionName) {
                     if (!doc.exists) {
                         displayMessage("An unexpected error has occurred. Report to the developers.");
                         console.log("The document was not found.");
-                        pollGlobal = null;
                     } else {
                         pollGlobal = doc.data();
                         document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
@@ -145,6 +160,28 @@ function submitPollResponse() {
                 console.log(error.code, error.message);
 		    });
     }
+}
+
+function getPollResults () {
+    db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults")
+        .get()
+        .then (function (doc) {
+            if (!doc.exists) {
+                displayMessage("An unexpected error has occured. Report to the developers");
+			} else {
+                var res = doc.data();
+                var data = new Blob([JSON.stringify(res, null, 2)], {type: 'application/json'});
+                var url = window.URL.createObjectURL(data);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = pollGlobal.topic + " Results.txt";
+                a.click();
+			}
+		})
+        .catch (function (error) {
+            displayMessage("An error message has occurred.");
+            console.log(error.code, error.message);
+		});
 }
 
 function signOut() {
