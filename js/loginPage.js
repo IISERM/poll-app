@@ -11,9 +11,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
-if (firebase.auth().currentUser != null) {
-    location.href = "polls.html"
-}
+firebase.auth().onAuthStateChanged(function(user) {
+    if(user){
+        window.location="polls.html";
+	}
+});
 
 function showError(errormsg) {
     console.log("showError: " + errormsg);
@@ -30,41 +32,32 @@ function hideError() {
 function login() {
     var email = document.getElementById("email").value;
     var password = document.getElementById("passwordLogin").value;
-    firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(function () {
-            if (firebase.auth().currentUser != null) {
-                console.log("Logged in");
-                if (document.getElementById("ckbxRememberMe").checked) {
-                    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-                        .catch(function (error) {
-                            console.log(error.message);
-                            console.log(error.code);
-                        });
-                } else {
-                    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-                        .catch(function (error) {
-                            console.log(error.message);
-                            console.log(error.code);
-                        });
-                }
-            }
-            location.href = "polls.html";
+    var persistenceMode = document.getElementById("ckbxRememberMe").checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+    firebase.auth().setPersistence(persistenceMode)
+        .then(function() {
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then(function() {
+                    console.log("Logged in.");
+                })
+                .catch(function (error) {
+                    var errorMessage = error.message;
+                    var errorCode = error.code;
+                    console.log(errorCode);
+                    console.log(errorMessage);
+                    if (errorCode == "auth/user-not-found") {
+                        showError("User not found. Please sign up to continue");
+                    } else if (errorCode == "auth/invalid-email") {
+                        showError("Invalid email");
+                    } else if (errorCode == "auth/wrong-password") {
+                        showError("Wrong Password");
+                    } else {
+                        showError("Some error has occured. Please try again.");
+                    }
+                });
         })
         .catch(function (error) {
-            var errorMessage = error.message;
-            var errorCode = error.code;
-            console.log(errorCode);
-            console.log(errorMessage);
-            if (errorCode == "auth/user-not-found") {
-                showError("User not found. Please sign up to continue");
-            } else if (errorCode == "auth/invalid-email") {
-                showError("Invalid email");
-            } else if (errorCode == "auth/wrong-password") {
-                showError("Wrong Password");
-            } else {
-                showError("Some error has occured. Please try again.");
-            }
-        });
+            console.log(error.code, error.message);
+		});
 }
 
 function signUp() {
