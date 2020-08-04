@@ -50,30 +50,9 @@ function loadActivePolls() {
 function loadPollQuestions() {
     var collectionName = document.getElementById("pollselect").value;
     if (collectionName != "---Select a Poll---") {
-        var alreadyVoted = hasAlreadyVoted();
-        if (!alreadyVoted) {
-            db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
-                .withConverter(pollConverter)
-                .get()
-                .then(function (doc) {
-                    if (!doc.exists) {
-                        displayMessage("An unexpected error has occurred. Report to the developers.");
-                        console.log("The document was not found.");
-                    } else {
-                        pollGlobal = doc.data();
-                        document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error.code);
-                    console.log(error.message);
-                    displayMessage("There was an error in fetching the contents. Please try againg later.");
-                });
-        } else {
-            document.getElementById('current_poll').innerHTML = "Yay! You've already voted!"
-        }
+        hasAlreadyVoted(collectionName);
     } else {
-	pollGlobal = null;
+        pollGlobal = null;
     }
 }
 
@@ -87,16 +66,34 @@ function displayMessage(msg) {
     }, 2000);
 }
 
-function hasAlreadyVoted() {
+function hasAlreadyVoted(collectionName) {
     var alreadyVotedList = null;
-    db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted")
+    db.collection("Polls").doc("Redundant").collection(collectionName).doc("PeopleWhoHaveAlreadyVoted")
         .get()
         .then(function(doc){
-            alreadyVotedList = doc.AlreadyVoted;
-            if(alreadyVotedList.indexOf(firebase.auth().currentUser.uid)!=-1) {
-                return false;
+            alreadyVotedList = doc.data().AlreadyVoted;
+            if(alreadyVotedList.indexOf(firebase.auth().currentUser.uid) != -1) {
+                document.getElementById('current_poll').innerHTML = "Yay! You've already voted!";
+                pollGlobal = null;
 	        } else {
-                return true;
+                db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
+                .withConverter(pollConverter)
+                .get()
+                .then(function (doc) {
+                    if (!doc.exists) {
+                        displayMessage("An unexpected error has occurred. Report to the developers.");
+                        console.log("The document was not found.");
+                        pollGlobal = null;
+                    } else {
+                        pollGlobal = doc.data();
+                        document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                    displayMessage("There was an error in fetching the contents. Please try againg later.");
+                });
 	        }
 		})
         .catch(function(error) {

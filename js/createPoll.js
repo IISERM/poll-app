@@ -68,7 +68,7 @@ function updateUI() {
 function displayMessage(str) {
     var div = document.getElementById("errorDiv")
     var span = document.getElementById("errorMsg")
-    span.innerHTML = msg
+    span.innerHTML = str
     div.classList.remove("hidden")
     setTimeout(() => {
         div.classList.add("hidden")
