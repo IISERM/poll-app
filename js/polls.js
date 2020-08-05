@@ -22,9 +22,19 @@ firebase.auth().onAuthStateChanged(function (user) {
         window.location = "index.html";
     }
 });
+
+function removeFromSelect () {
+    var sel = document.getElementById("pollselect");
+    var i;
+    for(i=sel.options.length-1; i>0; i--) {
+        sel.remove(i);
+	}
+}
+
 function loadActivePolls() {
     //The function logic would be different once the lists are there.
     //Write now, there is just one db having the name of all polls.
+    removeFromSelect();
     var activePolls;
     var select = document.getElementById("pollselect");
     db.collection("ListWiseActivePolls").doc("All")
@@ -185,6 +195,8 @@ function getPollResults() {
 }
 
 function signOut() {
+    removeFromSelect();
+    document.getElementById('current_poll').innerHTML = "No Poll Selected";
     firebase.auth().signOut()
         .catch(function (error) {
             displayMessage("Couldn't sign you out.");
