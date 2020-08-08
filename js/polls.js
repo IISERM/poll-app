@@ -159,7 +159,7 @@ function submitPollResponse() {
             }
         }
         batch.update(dbRef, responseMap);
-        batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid) });
+        batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.email) });
         batch.commit()
             .then(function () {
                 displayMessage("Your response has been recorded.");
