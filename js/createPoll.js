@@ -31,7 +31,7 @@ function uploadPoll() {
     var pollListDb = db.collection("ListWiseActivePolls").doc("All");
     var batch = db.batch();
     batch.set(pollDb, poll);
-    batch.update(pollListDb, { "Active Polls": firebase.firestore.FieldValue.arrayUnion(poll.topic) });
+    batch.update(pollListDb, { "ActivePolls": firebase.firestore.FieldValue.arrayUnion(poll.topic) });
     if (poll.isAnonymous) {
         var pollObj = {};
         var i;

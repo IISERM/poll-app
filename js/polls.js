@@ -41,7 +41,7 @@ function loadActivePolls() {
         .get()
         .then(function (doc) {
             if (doc.exists) {
-                activePolls = doc.get("Active Polls");
+                activePolls = doc.get("ActivePolls");
                 for (var i = 0; i < activePolls.length; i++) {
                     select.options[select.options.length] = new Option(activePolls[i], activePolls[i]);
                     select.options[select.options.length - 1].className = "f6 f4-ns pa1"
