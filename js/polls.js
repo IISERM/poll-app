@@ -22,16 +22,26 @@ firebase.auth().onAuthStateChanged(function (user) {
         window.location = "index.html";
     }
 });
+
+function removeFromSelect () {
+    var sel = document.getElementById("pollselect");
+    var i;
+    for(i=sel.options.length-1; i>0; i--) {
+        sel.remove(i);
+	}
+}
+
 function loadActivePolls() {
     //The function logic would be different once the lists are there.
     //Write now, there is just one db having the name of all polls.
+    removeFromSelect();
     var activePolls;
     var select = document.getElementById("pollselect");
     db.collection("ListWiseActivePolls").doc("All")
         .get()
         .then(function (doc) {
             if (doc.exists) {
-                activePolls = doc.get("Active Polls");
+                activePolls = doc.get("ActivePolls");
                 for (var i = 0; i < activePolls.length; i++) {
                     select.options[select.options.length] = new Option(activePolls[i], activePolls[i]);
                     select.options[select.options.length - 1].className = "f6 f4-ns pa1"
@@ -149,7 +159,7 @@ function submitPollResponse() {
             }
         }
         batch.update(dbRef, responseMap);
-        batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid) });
+        batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.email) });
         batch.commit()
             .then(function () {
                 displayMessage("Your response has been recorded.");
@@ -185,6 +195,8 @@ function getPollResults() {
 }
 
 function signOut() {
+    removeFromSelect();
+    document.getElementById('current_poll').innerHTML = "No Poll Selected";
     firebase.auth().signOut()
         .catch(function (error) {
             displayMessage("Couldn't sign you out.");
