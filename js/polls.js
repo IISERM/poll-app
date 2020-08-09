@@ -23,12 +23,12 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 
-function removeFromSelect () {
+function removeFromSelect() {
     var sel = document.getElementById("pollselect");
     var i;
-    for(i=sel.options.length-1; i>0; i--) {
+    for (i = sel.options.length - 1; i > 0; i--) {
         sel.remove(i);
-	}
+    }
 }
 
 function loadActivePolls() {
@@ -189,7 +189,7 @@ function getPollResults() {
             }
         })
         .catch(function (error) {
-            displayMessage("An error message has occurred.");
+            displayMessage("An error has occurred.");
             console.log(error.code, error.message);
         });
 }
@@ -204,25 +204,3 @@ function signOut() {
             console.log(error.message);
         });
 }
-
-/*
-poll = new Poll(
-    "Title", "Description", 0, false,
-    [new Question(
-        "This is a question with mcq.",
-        0,
-        ["Option1", "Option2", "Option3"]
-    ),
-    new Question(
-        "This is a question with scq.",
-        1,
-        ["Option1", "Option2", "Option3"]
-    ),
-    new Question(
-        "This is a question with lat.",
-        2,
-        []
-    ),
-    ])
-document.getElementById('current_poll').innerHTML = poll.getAsHTML()
-*/
