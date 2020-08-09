@@ -25,6 +25,8 @@ class Poll {
 					${this.isAnonymous ? '<h1 class="f6 f5-ns lh-title fw1 mv1 green">This poll is anonymous</h1>' : '<h1 class="f5 lh-title fw1 mv1 red">This poll is not anonymous</h1>'}
 				</header>
 				${qs}
+				<a class="f5 f4-ns link dim br2 ba ph3 pv2 dib dark-blue mh1 mv1 mv0-ns h-100 pointer"
+                    onclick="submitPollResponse()">Submit</a>
 			</div>`
 		return html
 	}
