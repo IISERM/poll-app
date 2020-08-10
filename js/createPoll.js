@@ -53,7 +53,7 @@ function uploadPoll() {
     batch.set(db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": [] });
     batch.commit()
         .then(function () {
-            displayMessage("The Poll has been added.");
+            displayMessageAndLeave("The Poll has been added.");
         })
         .catch(function (error) {
             console.log(error.code);
@@ -80,7 +80,18 @@ function displayMessage(str) {
     div.classList.remove("hidden")
     setTimeout(() => {
         div.classList.add("hidden")
-    }, 2000);
+    }, 5000);
+}
+
+function displayMessageAndLeave(str) {
+    var div = document.getElementById("errorDiv")
+    var span = document.getElementById("errorMsg")
+    span.innerHTML = str
+    div.classList.remove("hidden")
+    setTimeout(() => {
+        div.classList.add("hidden");
+        window.location = "polls.html";
+    }, 1000);
 }
 
 function resetoptions() {
@@ -118,7 +129,7 @@ function addQuestion() {
     var type = 0
     for (var i = 0; i < ele.length; i++) {
         if (ele[i].checked) {
-            type = ele[i].value
+            type = parseInt(ele[i].value)
         }
     }
     var options = []
