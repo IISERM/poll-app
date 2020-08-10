@@ -84,7 +84,8 @@ function hasAlreadyVoted(collectionName) {
         .then(function (doc) {
             alreadyVotedList = doc.data().AlreadyVoted;
             if (alreadyVotedList.indexOf(firebase.auth().currentUser.uid) != -1) {
-                document.getElementById('current_poll').innerHTML = "Yay! You've already voted!";
+                document.getElementById('current_poll').innerHTML = `<p>Yay! You've already voted!</p>
+                <a class="f5 f4-ns link dim br2 ba ph3 pv2 dib dark-blue mh1 mv1 mv0-ns pointer" onclick="getPollResults()">Get Poll Results</a>`;
                 db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
                     .withConverter(pollConverter)
                     .get()
