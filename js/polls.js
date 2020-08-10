@@ -35,6 +35,7 @@ function loadActivePolls() {
     //The function logic would be different once the lists are there.
     //Write now, there is just one db having the name of all polls.
     removeFromSelect();
+    hideButtons();
     var activePolls;
     var select = document.getElementById("pollselect");
     db.collection("ListWiseActivePolls").doc("All")
@@ -47,7 +48,7 @@ function loadActivePolls() {
                     select.options[select.options.length - 1].className = "f6 f4-ns pa1"
                 }
             } else {
-                displayMessage("An unexpected error has occured. Report to developers");
+                displayMessage("An unexpected error has occurred. Report to developers");
                 console.log("The document doesn't exist");
             }
         })
@@ -64,6 +65,8 @@ function loadPollQuestions() {
         hasAlreadyVoted(collectionName);
     } else {
         pollGlobal = null;
+        document.getElementById('current_poll').innerHTML = "No Poll Selected.";
+        hideButtons();
     }
 }
 
@@ -74,7 +77,18 @@ function displayMessage(msg) {
     div.classList.remove("hidden")
     setTimeout(() => {
         div.classList.add("hidden")
-    }, 2000);
+    }, 5000);
+}
+
+function displayMessageAndReload(msg) {
+    var div = document.getElementById("errorDiv")
+    var span = document.getElementById("errorMsg")
+    span.innerHTML = msg
+    div.classList.remove("hidden")
+    setTimeout(() => {
+        div.classList.add("hidden");
+        window.location.reload();
+    }, 1000);
 }
 
 function hasAlreadyVoted(collectionName) {
@@ -95,12 +109,14 @@ function hasAlreadyVoted(collectionName) {
                             console.log("The document was not found.");
                         } else {
                             pollGlobal = doc.data();
+                            hideButtons();
                         }
                     })
                     .catch(function (error) {
                         console.log(error.code);
                         console.log(error.message);
-                        displayMessage("There was an error in fetching the contents. Please try againg later.");
+                        displayMessage("There was an error in fetching the contents. Please try again later.");
+                        hideButtons();
                     });
             } else {
                 db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
@@ -113,18 +129,21 @@ function hasAlreadyVoted(collectionName) {
                         } else {
                             pollGlobal = doc.data();
                             document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
+                            showButtons();
                         }
                     })
                     .catch(function (error) {
                         console.log(error.code);
                         console.log(error.message);
-                        displayMessage("There was an error in fetching the contents. Please try againg later.");
+                        displayMessage("There was an error in fetching the contents. Please try again later.");
+                        hideButtons();
                     });
             }
         })
         .catch(function (error) {
             displayMessage("There was an error. Please retry.");
             console.log(error.code, error.message);
+            hideButtons();
         });
 }
 
@@ -163,8 +182,7 @@ function submitPollResponse() {
         batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.email) });
         batch.commit()
             .then(function () {
-                displayMessage("Your response has been recorded.");
-                window.location.reload();
+                displayMessageAndReload("Your response has been recorded.");
             })
             .catch(function (error) {
                 displayMessage("Your response couldn't be recorded");
@@ -193,6 +211,14 @@ function getPollResults() {
             displayMessage("An error has occurred.");
             console.log(error.code, error.message);
         });
+}
+
+function showButtons() {
+    console.log("Submit and get current results buttons are being shown.");
+}
+
+function hideButtons() {
+    console.log("Submit and get current results buttons are hidden.");
 }
 
 function signOut() {
