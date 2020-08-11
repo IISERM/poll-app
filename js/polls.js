@@ -29,13 +29,13 @@ function removeFromSelect() {
     for (i = sel.options.length - 1; i > 0; i--) {
         sel.remove(i);
     }
+    hidebuttons();
 }
 
 function loadActivePolls() {
     //The function logic would be different once the lists are there.
     //Write now, there is just one db having the name of all polls.
     removeFromSelect();
-
     var activePolls;
     var select = document.getElementById("pollselect");
     db.collection("ListWiseActivePolls").doc("All")
@@ -66,25 +66,25 @@ function loadPollQuestions() {
     } else {
         pollGlobal = null;
         document.getElementById('current_poll').innerHTML = "No Poll Selected.";
-
+        hidebuttons();
     }
 }
 
 function displayMessage(msg) {
-    var div = document.getElementById("errorDiv")
-    var span = document.getElementById("errorMsg")
-    span.innerHTML = msg
-    div.classList.remove("hidden")
+    var div = document.getElementById("errorDiv");
+    var span = document.getElementById("errorMsg");
+    span.innerHTML = msg;
+    div.classList.remove("hidden");
     setTimeout(() => {
-        div.classList.add("hidden")
+        div.classList.add("hidden");
     }, 5000);
 }
 
 function displayMessageAndReload(msg) {
-    var div = document.getElementById("errorDiv")
-    var span = document.getElementById("errorMsg")
+    var div = document.getElementById("errorDiv");
+    var span = document.getElementById("errorMsg");
     span.innerHTML = msg
-    div.classList.remove("hidden")
+    div.classList.remove("hidden");
     setTimeout(() => {
         div.classList.add("hidden");
         window.location.reload();
@@ -98,7 +98,7 @@ function hasAlreadyVoted(collectionName) {
         .then(function (doc) {
             alreadyVotedList = doc.data().AlreadyVoted;
             if (alreadyVotedList.indexOf(firebase.auth().currentUser.email) != -1) {
-                document.getElementById('current_poll').innerHTML = `<p>Yay! You've already voted!</p><a class="f5 f4-ns link dim br2 ba ph3 pv2 dib dark-blue mh1 mv1 mv0-ns pointer" onclick="getPollResults()">Get Poll Results</a>`;
+                document.getElementById('current_poll').innerHTML = "Yay! You've already voted!";
                 db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
                     .withConverter(pollConverter)
                     .get()
@@ -108,13 +108,15 @@ function hasAlreadyVoted(collectionName) {
                             console.log("The document was not found.");
                         } else {
                             pollGlobal = doc.data();
+                            hidebuttons();
+                            showresult();
                         }
                     })
                     .catch(function (error) {
                         console.log(error.code);
                         console.log(error.message);
                         displayMessage("There was an error in fetching the contents. Please try again later.");
-
+                        hidebuttons();
                     });
             } else {
                 db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
@@ -127,20 +129,22 @@ function hasAlreadyVoted(collectionName) {
                         } else {
                             pollGlobal = doc.data();
                             document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
+                            hidebuttons();
+                            showsubmit();
                         }
                     })
                     .catch(function (error) {
                         console.log(error.code);
                         console.log(error.message);
                         displayMessage("There was an error in fetching the contents. Please try again later.");
-
+                        hidebuttons();
                     });
             }
         })
         .catch(function (error) {
             displayMessage("There was an error. Please retry.");
             console.log(error.code, error.message);
-
+            hidebuttons();
         });
 }
 
@@ -219,4 +223,21 @@ function signOut() {
             console.log(error.code);
             console.log(error.message);
         });
+}
+
+function hidebuttons() {
+    document.getElementById("poll_submit").classList.remove("dib");
+    document.getElementById("poll_result").classList.remove("dib");
+    document.getElementById("poll_submit").classList.add("dn");
+    document.getElementById("poll_result").classList.add("dn");
+}
+
+function showsubmit() {
+    document.getElementById("poll_submit").classList.remove("dn");
+    document.getElementById("poll_submit").classList.add("dib");
+}
+
+function showresult() {
+    document.getElementById("poll_result").classList.remove("dn");
+    document.getElementById("poll_result").classList.add("dib");
 }
