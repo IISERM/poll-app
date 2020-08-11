@@ -29,13 +29,13 @@ function removeFromSelect() {
     for (i = sel.options.length - 1; i > 0; i--) {
         sel.remove(i);
     }
+    hidebuttons();
 }
 
 function loadActivePolls() {
     //The function logic would be different once the lists are there.
     //Write now, there is just one db having the name of all polls.
     removeFromSelect();
-    hideButtons();
     var activePolls;
     var select = document.getElementById("pollselect");
     db.collection("ListWiseActivePolls").doc("All")
@@ -66,25 +66,25 @@ function loadPollQuestions() {
     } else {
         pollGlobal = null;
         document.getElementById('current_poll').innerHTML = "No Poll Selected.";
-        hideButtons();
+        hidebuttons();
     }
 }
 
 function displayMessage(msg) {
-    var div = document.getElementById("errorDiv")
-    var span = document.getElementById("errorMsg")
-    span.innerHTML = msg
-    div.classList.remove("hidden")
+    var div = document.getElementById("errorDiv");
+    var span = document.getElementById("errorMsg");
+    span.innerHTML = msg;
+    div.classList.remove("hidden");
     setTimeout(() => {
-        div.classList.add("hidden")
+        div.classList.add("hidden");
     }, 5000);
 }
 
 function displayMessageAndReload(msg) {
-    var div = document.getElementById("errorDiv")
-    var span = document.getElementById("errorMsg")
+    var div = document.getElementById("errorDiv");
+    var span = document.getElementById("errorMsg");
     span.innerHTML = msg
-    div.classList.remove("hidden")
+    div.classList.remove("hidden");
     setTimeout(() => {
         div.classList.add("hidden");
         window.location.reload();
@@ -108,14 +108,15 @@ function hasAlreadyVoted(collectionName) {
                             console.log("The document was not found.");
                         } else {
                             pollGlobal = doc.data();
-                            hideButtons();
+                            hidebuttons();
+                            showresult();
                         }
                     })
                     .catch(function (error) {
                         console.log(error.code);
                         console.log(error.message);
                         displayMessage("There was an error in fetching the contents. Please try again later.");
-                        hideButtons();
+                        hidebuttons();
                     });
             } else {
                 db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
@@ -128,21 +129,22 @@ function hasAlreadyVoted(collectionName) {
                         } else {
                             pollGlobal = doc.data();
                             document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
-                            showButtons();
+                            hidebuttons();
+                            showsubmit();
                         }
                     })
                     .catch(function (error) {
                         console.log(error.code);
                         console.log(error.message);
                         displayMessage("There was an error in fetching the contents. Please try again later.");
-                        hideButtons();
+                        hidebuttons();
                     });
             }
         })
         .catch(function (error) {
             displayMessage("There was an error. Please retry.");
             console.log(error.code, error.message);
-            hideButtons();
+            hidebuttons();
         });
 }
 
@@ -202,7 +204,7 @@ function getPollResults() {
                 var url = window.URL.createObjectURL(data);
                 var a = document.createElement('a');
                 a.href = url;
-                a.download = pollGlobal.topic + " Results.txt";
+                a.download = pollGlobal.topic + " Results.json";
                 a.click();
             }
         })
@@ -210,14 +212,6 @@ function getPollResults() {
             displayMessage("An error has occurred.");
             console.log(error.code, error.message);
         });
-}
-
-function showButtons() {
-    console.log("Submit and get current results buttons are being shown.");
-}
-
-function hideButtons() {
-    console.log("Submit and get current results buttons are hidden.");
 }
 
 function signOut() {
@@ -229,4 +223,21 @@ function signOut() {
             console.log(error.code);
             console.log(error.message);
         });
+}
+
+function hidebuttons() {
+    document.getElementById("poll_submit").classList.remove("dib");
+    document.getElementById("poll_result").classList.remove("dib");
+    document.getElementById("poll_submit").classList.add("dn");
+    document.getElementById("poll_result").classList.add("dn");
+}
+
+function showsubmit() {
+    document.getElementById("poll_submit").classList.remove("dn");
+    document.getElementById("poll_submit").classList.add("dib");
+}
+
+function showresult() {
+    document.getElementById("poll_result").classList.remove("dn");
+    document.getElementById("poll_result").classList.add("dib");
 }

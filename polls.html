@@ -32,6 +32,12 @@
         <div id="current_poll"
             class="min-h-100 br3 ba b--dark-blue bg-white pa1 pa3-ns tc mh1 flex flex-wrap flex-column justify-start items-center flex-grow-1">
             No poll selected</div>
+        <div class="flex flex-row w-100 justify-center mv1">
+            <a id="poll_submit" class="f5 f4-ns link dim br2 ba ph3 pv2 bg-dark-blue white mh1 mv1 mv0-ns pointer dn"
+                onclick="submitPollResponse()">Submit Poll</a>
+            <a id="poll_result" class="f5 f4-ns link dim br2 ba ph3 pv2 dark-blue mh1 mv1 mv0-ns pointer dn"
+                onclick="getPollResults()">Poll Results</a>
+        </div>
     </div>
     <div id="errorDiv" class="fixed bottom-2 z-1 flex flex-wrap flex-row justify-center vp-center hidden">
         <div class="pa2 bg-lightest-blue black ba br-pill">
