@@ -16,7 +16,7 @@ firebase.initializeApp(firebaseConfig);
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         if (!user.emailVerified) {
-            displayMessage("You need to verify your email before you can create polls.");
+            window.location = "account-verify.html";
         }
     } else {
         window.location = "index.html";
