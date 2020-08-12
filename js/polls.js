@@ -38,6 +38,7 @@ function loadActivePolls() {
     removeFromSelect();
     var activePolls;
     var select = document.getElementById("pollselect");
+    document.getElementById('current_poll').innerHTML = "No Poll Selected.";
     db.collection("ListWiseActivePolls").doc("All")
         .get()
         .then(function (doc) {
