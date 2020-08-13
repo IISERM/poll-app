@@ -26,7 +26,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 function resendVerificationLink() {
     displayMessage("");
     firebase.auth().currentUser.sendEmailVerification()
-        .then(function (){
+        .then(function () {
             console.log("Verification link sent.")
             hideContent();
             displayMessage("Account verification mail has been sent. Refresh after verification.");
@@ -51,11 +51,11 @@ function signOut() {
 }
 
 function showContent() {
-    document.getElementById("verifyMsg").style.visibility = "visible";
-    document.getElementById("button").style.visibility = "visible";
+    document.getElementById("verifyMsg").classList.remove("hidden");
+    document.getElementById("button").classList.remove("hidden");
 }
 
 function hideContent() {
-    document.getElementById("verifyMsg").style.visibility = "hidden";
-    document.getElementById("button").style.visibility = "hidden";
+    document.getElementById("verifyMsg").classList.add("hidden");
+    document.getElementById("button").classList.add("hidden");
 }
