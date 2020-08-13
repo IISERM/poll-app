@@ -65,7 +65,7 @@ function uploadPoll() {
 function updatePoll() {
     poll.topic = encodeToFirebaseKey(title.value)
     poll.description = encodeToFirebaseKey(desc.value)
-    poll.isAnonymous = encodeToFirebaseKey(anon.checked)
+    poll.isAnonymous = anon.checked
     updateUI()
 }
 

@@ -106,7 +106,7 @@ questionConverter = {
 
 function encodeToFirebaseKey(s) {
 	s = encodeURIComponent(s);
-	return s.replace(/\*/g, "%2A").replace(/\./, "%2E").replace(/\~/, "%7E");
+	return s.replace(/\*/g, "%2A").replace(/\./g, "%2E").replace(/\~/g, "%7E");
 }
 
 function decodeFromFirebaseKey(s) {
