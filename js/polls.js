@@ -45,7 +45,7 @@ function loadActivePolls() {
             if (doc.exists) {
                 activePolls = doc.get("ActivePolls");
                 for (var i = 0; i < activePolls.length; i++) {
-                    select.options[select.options.length] = new Option(activePolls[i], activePolls[i]);
+                    select.options[select.options.length] = new Option(decodeFromFirebaseKey(activePolls[i]), activePolls[i]);
                     select.options[select.options.length - 1].className = "f6 f4-ns pa1"
                 }
             } else {
@@ -69,27 +69,6 @@ function loadPollQuestions() {
         document.getElementById('current_poll').innerHTML = "No Poll Selected.";
         hidebuttons();
     }
-}
-
-function displayMessage(msg) {
-    var div = document.getElementById("errorDiv");
-    var span = document.getElementById("errorMsg");
-    span.innerHTML = msg;
-    div.classList.remove("hidden");
-    setTimeout(() => {
-        div.classList.add("hidden");
-    }, 5000);
-}
-
-function displayMessageAndReload(msg) {
-    var div = document.getElementById("errorDiv");
-    var span = document.getElementById("errorMsg");
-    span.innerHTML = msg
-    div.classList.remove("hidden");
-    setTimeout(() => {
-        div.classList.add("hidden");
-        window.location.reload();
-    }, 1000);
 }
 
 function hasAlreadyVoted(collectionName) {
@@ -241,4 +220,25 @@ function showsubmit() {
 function showresult() {
     document.getElementById("poll_result").classList.remove("dn");
     document.getElementById("poll_result").classList.add("dib");
+}
+
+function displayMessage(msg) {
+    var div = document.getElementById("errorDiv");
+    var span = document.getElementById("errorMsg");
+    span.innerHTML = msg;
+    div.classList.remove("hidden");
+    setTimeout(() => {
+        div.classList.add("hidden");
+    }, 5000);
+}
+
+function displayMessageAndReload(msg) {
+    var div = document.getElementById("errorDiv");
+    var span = document.getElementById("errorMsg");
+    span.innerHTML = msg
+    div.classList.remove("hidden");
+    setTimeout(() => {
+        div.classList.add("hidden");
+        window.location.reload();
+    }, 1000);
 }

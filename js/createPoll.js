@@ -63,35 +63,14 @@ function uploadPoll() {
 }
 
 function updatePoll() {
-    poll.topic = title.value
-    poll.description = desc.value
-    poll.isAnonymous = anon.checked
+    poll.topic = encodeToFirebaseKey(title.value)
+    poll.description = encodeToFirebaseKey(desc.value)
+    poll.isAnonymous = encodeToFirebaseKey(anon.checked)
     updateUI()
 }
 
 function updateUI() {
     document.getElementById('displayArea').innerHTML = poll.getAsHTML()
-}
-
-function displayMessage(str) {
-    var div = document.getElementById("errorDiv")
-    var span = document.getElementById("errorMsg")
-    span.innerHTML = str
-    div.classList.remove("hidden")
-    setTimeout(() => {
-        div.classList.add("hidden")
-    }, 5000);
-}
-
-function displayMessageAndLeave(str) {
-    var div = document.getElementById("errorDiv")
-    var span = document.getElementById("errorMsg")
-    span.innerHTML = str
-    div.classList.remove("hidden")
-    setTimeout(() => {
-        div.classList.add("hidden");
-        window.location = "polls.html";
-    }, 1000);
 }
 
 function resetoptions() {
@@ -124,7 +103,7 @@ function closedialog() {
     dia.classList.add('dn')
 }
 function addQuestion() {
-    var title = document.getElementById('question').value
+    var title = encodeToFirebaseKey(document.getElementById('question').value)
     var ele = document.getElementsByName('type');
     var type = 0
     for (var i = 0; i < ele.length; i++) {
@@ -135,7 +114,7 @@ function addQuestion() {
     var options = []
     ele = document.getElementsByName('options');
     for (var i = 0; i < ele.length; i++) {
-        options.push(ele[i].value)
+        options.push(encodeToFirebaseKey(ele[i].value))
     }
     console.log(options);
     poll.questions.push(new Question(
@@ -147,4 +126,25 @@ function addQuestion() {
     closedialog()
     updateUI()
     return false
+}
+
+function displayMessage(str) {
+    var div = document.getElementById("errorDiv")
+    var span = document.getElementById("errorMsg")
+    span.innerHTML = str
+    div.classList.remove("hidden")
+    setTimeout(() => {
+        div.classList.add("hidden")
+    }, 5000);
+}
+
+function displayMessageAndLeave(str) {
+    var div = document.getElementById("errorDiv")
+    var span = document.getElementById("errorMsg")
+    span.innerHTML = str
+    div.classList.remove("hidden")
+    setTimeout(() => {
+        div.classList.add("hidden");
+        window.location = "polls.html";
+    }, 1000);
 }
