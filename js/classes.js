@@ -106,10 +106,10 @@ questionConverter = {
 
 function encodeToFirebaseKey(s) {
 	s = encodeURIComponent(s);
-	return s.replace(/\*/g, "%2A").replace(/\./g, "%2E").replace(/\~/g, "%7E");
+	return s.replace(/\*/g, "%2A").replace(/\./g, "%2E").replace(/\~/g, "%7E").replace(/\_/g, "%5F").replace(/\!/g, "%21").replace(/\'/g, "%27").replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/\-/g, "%2D");
 }
 
 function decodeFromFirebaseKey(s) {
-	s = s.replace(/%2A/g, "*").replace(/%2E/g, ".").replace(/7E/g, "~");
+	s = s.replace(/%2A/g, "*").replace(/%2E/g, ".").replace(/%7E/g, "~").replace(/%5F/g, "_").replace(/%21/g, "!").replace(/%27/g, "'").replace(/%28/g, "(").replace(/%29/g, ")").replace(/%2D/g, "-");
 	return s = decodeURIComponent(s);
 }
