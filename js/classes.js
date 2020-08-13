@@ -17,10 +17,10 @@ class Poll {
 			<div class="flex flex-column w-90 w-80-ns">
 				<header class="tc w-100 bb mb2 pa2">
 					<h1 class="f3 f2-ns lh-title mv1">
-						${this.topic}
+						${decodeFromFirebaseKey(this.topic)}
 					</h1>
 					<h1 class="f5 f4-ns lh-title fw1 mv1">
-						${this.description}
+						${decodeFromFirebaseKey(this.description)}
 					</h1>
 					${this.isAnonymous ? '<h1 class="f6 f5-ns lh-title fw1 mv1 green">This poll is anonymous</h1>' : '<h1 class="f5 lh-title fw1 mv1 red">This poll is not anonymous</h1>'}
 				</header>
@@ -56,15 +56,17 @@ class Question {
 		var html = ""
 		var arrayLength = this.options.length;
 		var inp_type = "radio"
+		var radioGroup = question_id+"radioGroup";
 		if (this.type == 1) {
 			inp_type = "checkbox"
+			radioGroup = "type"
 		}
 		for (var i = 0; i < arrayLength; i++) {
 			html = html + ` <tr class="stripe-dark">
 								<td class="pa3 w-10 tc v-mid">
-									<input type="${inp_type}" id="${question_id + "_" + i}" name="type" value="${i}">
+									<input type="${inp_type}" id="${question_id + "_" + i}" name="${radioGroup}" value="${i}">
 								</td>
-								<td class="pa3 w-90 tc v-mid"><label class="f5" for="${question_id + "_" + i}">${this.options[i]}</label></td>
+								<td class="pa3 w-90 tc v-mid"><label class="f5" for="${question_id + "_" + i}">${decodeFromFirebaseKey(this.options[i])}</label></td>
 							</tr>`
 		}
 		return html
@@ -75,7 +77,7 @@ class Question {
 		var input_html = this.type == 0 || this.type == 1 ? '<tbody class="lh-copy"\n>' + this.getOptionsAsHTML(questionid) + '</tbody >' : `<textarea name="ta" id="${questionid}" class="db border-box hover-black w-75 ba b--black-20 pa2 br2 mb2 resize-vertical" rows=4 placeholder="Your response"></textarea>`
 		var html = `<div class="flex flex-column w-100 ba b--dark-blue br2 pa1 pv3 pa4-ns mv2 bg-washed-blue items-center justify-center">
 					<h1 class="f4 f3-ns fw1 mb2 mb4-ns mt0">
-						${this.questionStr}
+						${decodeFromFirebaseKey(this.questionStr)}
 					</h1>
 					<table class="f6 w-90 w-75-ns center" cellspacing="0">
 						${input_html}
@@ -100,4 +102,14 @@ questionConverter = {
 	toObject: function (question) {
 		return new Question(question.questionStr, question.type, question.options)
 	}
+}
+
+function encodeToFirebaseKey(s) {
+	s = encodeURIComponent(s);
+	return s.replace(/\*/g, "%2A").replace(/\./g, "%2E").replace(/\~/g, "%7E");
+}
+
+function decodeFromFirebaseKey(s) {
+	s = s.replace(/%2A/g, "*").replace(/%2E/g, ".").replace(/7E/g, "~");
+	return s = decodeURIComponent(s);
 }
