@@ -129,46 +129,49 @@ function hasAlreadyVoted(collectionName) {
 }
 
 function submitPollResponse() {
-    var numOfQuestions = pollGlobal.questions.length;
-    var i;
-    var dbRef = db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults");
-    if (pollGlobal.isAnonymous) {
-        var batch = db.batch();
-        var responseMap = {};
-        for (i = 0; i < numOfQuestions; i++) {
-            var qType = pollGlobal.questions[i].type;
-            if (qType == 0) {
-                var j;
-                for (j = 0; j < pollGlobal.questions[i].options.length; j++) {
-                    if (document.getElementById("question_" + i + "_" + j).checked) {
-                        responseMap[pollGlobal.questions[i].questionStr + "." + pollGlobal.questions[i].options[j]] = firebase.firestore.FieldValue.increment(1);
-                        break;
+    var sure = confirm("Are you sure you wish to submit your response? Once you submit, no changes are possible.");
+    if (sure == true) {
+        var numOfQuestions = pollGlobal.questions.length;
+        var i;
+        var dbRef = db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults");
+        if (pollGlobal.isAnonymous) {
+            var batch = db.batch();
+            var responseMap = {};
+            for (i = 0; i < numOfQuestions; i++) {
+                var qType = pollGlobal.questions[i].type;
+                if (qType == 0) {
+                    var j;
+                    for (j = 0; j < pollGlobal.questions[i].options.length; j++) {
+                        if (document.getElementById("question_" + i + "_" + j).checked) {
+                            responseMap[pollGlobal.questions[i].questionStr + "." + pollGlobal.questions[i].options[j]] = firebase.firestore.FieldValue.increment(1);
+                            break;
+                        }
                     }
-                }
-            } else if (qType == 1) {
-                var j;
-                for (j = 0; j < pollGlobal.questions[i].options.length; j++) {
-                    if (document.getElementById("question_" + i + "_" + j).checked) {
-                        responseMap[pollGlobal.questions[i].questionStr + "." + pollGlobal.questions[i].options[j]] = firebase.firestore.FieldValue.increment(1);
+                } else if (qType == 1) {
+                    var j;
+                    for (j = 0; j < pollGlobal.questions[i].options.length; j++) {
+                        if (document.getElementById("question_" + i + "_" + j).checked) {
+                            responseMap[pollGlobal.questions[i].questionStr + "." + pollGlobal.questions[i].options[j]] = firebase.firestore.FieldValue.increment(1);
+                        }
                     }
+                } else if (qType == 2) {
+                    var resp = document.getElementById("question_" + i).value;
+                    responseMap[pollGlobal.questions[i].questionStr + ".Responses"] = firebase.firestore.FieldValue.arrayUnion(resp);
+                } else {
+                    console.log("Something is seriously wrong.");
                 }
-            } else if (qType == 2) {
-                var resp = document.getElementById("question_" + i).value;
-                responseMap[pollGlobal.questions[i].questionStr + ".Responses"] = firebase.firestore.FieldValue.arrayUnion(resp);
-            } else {
-                console.log("Something is seriously wrong.");
             }
+            batch.update(dbRef, responseMap);
+            batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.email) });
+            batch.commit()
+                .then(function () {
+                    displayMessageAndReload("Your response has been recorded.");
+                })
+                .catch(function (error) {
+                    displayMessage("Your response couldn't be recorded");
+                    console.log(error.code, error.message);
+                });
         }
-        batch.update(dbRef, responseMap);
-        batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.email) });
-        batch.commit()
-            .then(function () {
-                displayMessageAndReload("Your response has been recorded.");
-            })
-            .catch(function (error) {
-                displayMessage("Your response couldn't be recorded");
-                console.log(error.code, error.message);
-            });
     }
 }
 
@@ -177,7 +180,7 @@ function getPollResults() {
         .get()
         .then(function (doc) {
             if (!doc.exists) {
-                displayMessage("An unexpected error has occured. Report to the developers");
+                displayMessage("An unexpected error has occurred. Report to the developers");
             } else {
                 var res = doc.data();
                 var data = new Blob([JSON.stringify(res, null, 2)], { type: 'application/json' });

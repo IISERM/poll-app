@@ -63,8 +63,8 @@ function uploadPoll() {
 }
 
 function updatePoll() {
-    poll.topic = encodeToFirebaseKey(title.value)
-    poll.description = encodeToFirebaseKey(desc.value)
+    poll.topic = encodeToFirebaseKey(title.value.trim())
+    poll.description = encodeToFirebaseKey(desc.value.trim())
     poll.isAnonymous = anon.checked
     updateUI()
 }
@@ -103,7 +103,7 @@ function closedialog() {
     dia.classList.add('dn')
 }
 function addQuestion() {
-    var title = encodeToFirebaseKey(document.getElementById('question').value)
+    var title = encodeToFirebaseKey(document.getElementById('question').value.trim())
     var ele = document.getElementsByName('type');
     var type = 0
     for (var i = 0; i < ele.length; i++) {
@@ -114,7 +114,7 @@ function addQuestion() {
     var options = []
     ele = document.getElementsByName('options');
     for (var i = 0; i < ele.length; i++) {
-        options.push(encodeToFirebaseKey(ele[i].value))
+        options.push(encodeToFirebaseKey(ele[i].value.trim()))
     }
     console.log(options);
     poll.questions.push(new Question(
