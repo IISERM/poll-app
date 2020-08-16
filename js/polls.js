@@ -129,8 +129,7 @@ function hasAlreadyVoted(collectionName) {
 }
 
 function submitPollResponse() {
-    var sure = confirm("Are you sure you wish to submit your response? Once you submit, no changes are possible.");
-    if (sure == true) {
+    if (confirm("Are you sure you wish to submit your response? Once you submit, no changes are possible.")) {
         var numOfQuestions = pollGlobal.questions.length;
         var i;
         var dbRef = db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults");
