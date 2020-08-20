@@ -1,3 +1,11 @@
+/*
+	An important note-
+	All the strings that are stored in objects of Poll and Question class are to be encoded. At the level of the data,
+	encoded string are to be used all the time, i.e., while creating a new object or changing the value of one of its 
+	string data members, the encoded form of the string must be passed.
+	While displaying a string, decode it.
+	This will ensure uniformity and prevent errors.
+*/
 class Poll {
 	constructor(topic, description, type, isAnonymous, questions) {
 		this.topic = topic;

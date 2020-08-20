@@ -29,7 +29,7 @@ function hideError() {
 }
 
 function login() {
-    var email = document.getElementById("email").value;
+    var email = document.getElementById("email").value.trim();
     var password = document.getElementById("passwordLogin").value;
     var persistenceMode = document.getElementById("ckbxRememberMe").checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
     firebase.auth().setPersistence(persistenceMode)
@@ -60,7 +60,7 @@ function login() {
 }
 
 function signUp() {
-    var email = document.getElementById("registrationNumber").value + "@iisermohali.ac.in";
+    var email = document.getElementById("registrationNumber").value.trim() + "@iisermohali.ac.in";
     var password = document.getElementById("passwordSignUp").value;
     var confirmPassword = document.getElementById("confirmPassword").value;
     if (password != confirmPassword) {
@@ -97,7 +97,7 @@ function signUp() {
 }
 
 function sendResetPasswordLink() {
-    var email = document.getElementById("forgotPasswordEmail").value;
+    var email = document.getElementById("forgotPasswordEmail").value.trim();
     firebase.auth().sendPasswordResetEmail(email)
         .then(function () {
             showError("Reset Link Sent.")
