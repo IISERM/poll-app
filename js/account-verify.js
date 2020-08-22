@@ -29,7 +29,7 @@ function resendVerificationLink() {
         .then(function () {
             console.log("Verification link sent.")
             hideContent();
-            displayMessage("Account verification mail has been sent. Refresh after verification.");
+            displayMessage("Account verification mail has been sent. Sign out and login again after verification.");
         })
         .catch(function (error) {
             console.log(error.code, error.message)
