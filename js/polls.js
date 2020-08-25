@@ -174,6 +174,21 @@ function submitPollResponse() {
     }
 }
 
+function prettifyResultMap(poll) {
+    var newPoll = new Object();
+    for(var question in poll) {
+        var newQuestion = new Object();
+        // console.log(poll[question])
+        for(var option in poll[question]) {
+            // console.log(option);
+            newQuestion[decodeFromFirebaseKey(option)] = poll[question][option]
+            // console.log(newQuestion)
+        }
+        newPoll[decodeFromFirebaseKey(question)] = newQuestion
+    }
+    return newPoll;
+}
+
 function getPollResults() {
     db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults")
         .get()
@@ -181,7 +196,7 @@ function getPollResults() {
             if (!doc.exists) {
                 displayMessage("An unexpected error has occurred. Report to the developers");
             } else {
-                var res = doc.data();
+                var res = prettifyResultMap(doc.data());
                 var data = new Blob([JSON.stringify(res, null, 2)], { type: 'application/json' });
                 var url = window.URL.createObjectURL(data);
                 var a = document.createElement('a');
