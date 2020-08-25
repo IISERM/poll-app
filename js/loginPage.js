@@ -12,7 +12,23 @@ firebase.initializeApp(firebaseConfig);
 
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-        window.location = "polls.html";
+        if (!user.emailVerified) {
+            firebase.auth().currentUser.sendEmailVerification()
+                .then(function() {
+                    console.log("Mail sent.");
+                    window.location = "account-verify.html";
+                })
+                .catch(function (error) {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log(errorCode);
+                    console.log(errorMessage);
+                    window.location = "account-verify.html";
+                });
+            
+        } else {
+            window.location = "polls.html";
+        }
     }
 });
 
@@ -69,17 +85,6 @@ function signUp() {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(function () {
                 console.log("Created");
-                if (firebase.auth().currentUser != null) {
-                    console.log("Mail sent.")
-                    firebase.auth().currentUser.sendEmailVerification()
-                        .catch(function (error) {
-                            var errorCode = error.code;
-                            var errorMessage = error.message;
-                            console.log(errorCode);
-                            console.log(errorMessage)
-                        });
-                }
-                location.href = "polls.html";
             })
             .catch(function (error) {
                 var errorCode = error.code;
