@@ -24,9 +24,10 @@ firebase.auth().onAuthStateChanged(function (user) {
 });
 var db = firebase.firestore();
 
-var poll = new Poll("", "", 0, false, [])
+var poll = new Poll("", "", "", 0, false, true, [])
 
 function uploadPoll() {
+    poll.createdBy = firebase.auth().currentUser.email;
     var pollDb = db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PollContent").withConverter(pollConverter);
     var pollListDb = db.collection("ListWiseActivePolls").doc("All");
     var batch = db.batch();

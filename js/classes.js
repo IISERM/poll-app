@@ -7,12 +7,14 @@
 	This will ensure uniformity and prevent errors.
 */
 class Poll {
-	constructor(topic, description, type, isAnonymous, questions) {
+	constructor(topic, createdBy, description, type, isAnonymous, active, questions) {
 		this.topic = topic;
+		this.createdBy = createdBy;
 		this.description = description;
 		this.type = type;
 		this.isAnonymous = isAnonymous;
 		this.questions = questions;
+		this.active = active;
 	}
 	getAsHTML() {
 		var qs = ""
@@ -42,15 +44,17 @@ pollConverter = {
 	toFirestore: function (poll) {
 		return {
 			topic: poll.topic,
+			createdBy: poll.createdBy,
 			description: poll.description,
 			type: poll.type,
 			isAnonymous: poll.isAnonymous,
+			active: poll.active,
 			questions: poll.questions.map(q => questionConverter.toFirestore(q))
 		}
 	},
 	fromFirestore: function (snapshot, options) {
 		const data = snapshot.data(options);
-		return new Poll(data.topic, data.description, data.type, data.isAnonymous, data.questions.map(q => questionConverter.toObject(q)))
+		return new Poll(data.topic, data.createdBy, data.description, data.type, data.isAnonymous,data.active, data.questions.map(q => questionConverter.toObject(q)))
 	}
 }
 

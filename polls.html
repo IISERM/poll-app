@@ -17,7 +17,7 @@
                 onclick="signOut()">Sign Out</a>
         </header>
         <div class="flex flex-wrap flex-column flex-row-ns justify-center w-100 pa2">
-            <select name="pollselect" id="pollselect"
+            <select name="pollSelect" id="pollSelect"
                 class="pa1 br2 f4 ba b--transparent mh1 mv1 mv0-ns bg-dark-blue bg-black-70 white" style="flex-grow:1"
                 onchange="loadPollQuestions()">
                 <option class="f6 f4-ns">---Select a Poll---</option>
@@ -37,6 +37,8 @@
                 onclick="submitPollResponse()">Submit Poll</a>
             <a id="poll_result" class="f5 f4-ns link dim br2 ba ph3 pv2 dark-blue mh1 mv1 mv0-ns pointer dn"
                 onclick="getPollResults()">Poll Results</a>
+            <a id="poll_close" class="f5 f4-ns link dim br2 ba ph3 pv2 bg-dark-blue white mh1 mv1 mv0-ns pointer dn"
+                onclick="closePoll()">Close Poll</a>
         </div>
     </div>
     <div id="errorDiv" class="fixed bottom-2 z-1 flex flex-wrap flex-row justify-center vp-center hidden">
