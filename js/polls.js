@@ -11,6 +11,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var pollGlobal;
+var activePollsGlobal;
+var closedPollsGlobal;
 
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
@@ -24,28 +26,34 @@ firebase.auth().onAuthStateChanged(function (user) {
 });
 
 function removeFromSelect() {
-    var sel = document.getElementById("pollselect");
+    var sel = document.getElementById("pollSelect");
     var i;
     for (i = sel.options.length - 1; i > 0; i--) {
         sel.remove(i);
     }
-    hidebuttons();
+    hideResult();
+    hideSubmit();
+    hideClosePollButton();
 }
 
 function loadActivePolls() {
     //The function logic would be different once the lists are there.
-    //Write now, there is just one db having the name of all polls.
+    //Right now, there is just one db having the name of all polls.
     removeFromSelect();
-    var activePolls;
-    var select = document.getElementById("pollselect");
+    var select = document.getElementById("pollSelect");
     document.getElementById('current_poll').innerHTML = "No Poll Selected.";
     db.collection("ListWiseActivePolls").doc("All")
         .get()
         .then(function (doc) {
             if (doc.exists) {
-                activePolls = doc.get("ActivePolls");
-                for (var i = 0; i < activePolls.length; i++) {
-                    select.options[select.options.length] = new Option(decodeFromFirebaseKey(activePolls[i]), activePolls[i]);
+                activePollsGlobal = doc.get("ActivePolls");
+                closedPollsGlobal = doc.get("ClosedPolls");
+                for (var i = 0; i < activePollsGlobal.length; i++) {
+                    select.options[select.options.length] = new Option(decodeFromFirebaseKey(activePollsGlobal[i]), activePollsGlobal[i]);
+                    select.options[select.options.length - 1].className = "f6 f4-ns pa1"
+                }
+                for (var i = 0; i < closedPollsGlobal.length; i++) {
+                    select.options[select.options.length] = new Option(decodeFromFirebaseKey(closedPollsGlobal[i])+"(Closed)", closedPollsGlobal[i]);
                     select.options[select.options.length - 1].className = "f6 f4-ns pa1"
                 }
             } else {
@@ -60,71 +68,85 @@ function loadActivePolls() {
         });
 }
 
-function loadPollQuestions() {
-    var collectionName = document.getElementById("pollselect").value;
+async function loadPollQuestions() {
+    var collectionName = document.getElementById("pollSelect").value;
     if (collectionName != "---Select a Poll---") {
-        hasAlreadyVoted(collectionName);
-    } else {
-        pollGlobal = null;
-        document.getElementById('current_poll').innerHTML = "No Poll Selected.";
-        hidebuttons();
-    }
-}
-
-function hasAlreadyVoted(collectionName) {
-    var alreadyVotedList = null;
-    db.collection("Polls").doc("Redundant").collection(collectionName).doc("PeopleWhoHaveAlreadyVoted")
-        .get()
-        .then(function (doc) {
+        var alreadyVotedList = null;
+        var hasAlreadyVoted = null;
+        await db.collection("Polls").doc("Redundant").collection(collectionName).doc("PeopleWhoHaveAlreadyVoted").get()
+        .then(function(doc) {
             alreadyVotedList = doc.data().AlreadyVoted;
-            if (alreadyVotedList.indexOf(firebase.auth().currentUser.email) != -1) {
-                document.getElementById('current_poll').innerHTML = "Yay! You've already voted!";
-                db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
-                    .withConverter(pollConverter)
-                    .get()
-                    .then(function (doc) {
-                        if (!doc.exists) {
-                            displayMessage("An unexpected error has occurred. Report to the developers.");
-                            console.log("The document was not found.");
-                        } else {
-                            pollGlobal = doc.data();
-                            hidebuttons();
-                            showresult();
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error.code);
-                        console.log(error.message);
-                        displayMessage("There was an error in fetching the contents. Please try again later.");
-                        hidebuttons();
-                    });
-            } else {
-                db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
-                    .withConverter(pollConverter)
-                    .get()
-                    .then(function (doc) {
-                        if (!doc.exists) {
-                            displayMessage("An unexpected error has occurred. Report to the developers.");
-                            console.log("The document was not found.");
-                        } else {
-                            pollGlobal = doc.data();
-                            document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
-                            hidebuttons();
-                            showsubmit();
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error.code);
-                        console.log(error.message);
-                        displayMessage("There was an error in fetching the contents. Please try again later.");
-                        hidebuttons();
-                    });
-            }
+            hasAlreadyVoted = alreadyVotedList.indexOf(firebase.auth().currentUser.email) != -1 ? true : false;
         })
         .catch(function (error) {
             displayMessage("There was an error. Please retry.");
             console.log(error.code, error.message);
-            hidebuttons();
+        });
+        await db.collection("Polls").doc("Redundant").collection(collectionName).doc("PollContent")
+        .withConverter(pollConverter)
+        .get()
+        .then(function (doc){
+            if (!doc.exists) {
+                displayMessage("An unexpected error has occurred. Report to the developers.");
+                console.log("The document was not found.");
+            } else {
+                pollGlobal = doc.data();
+            }
+        })
+        .catch(function (error){
+            console.log(error.code, error.message);
+            displayMessage("There was an error in fetching the contents. Please try again later.");
+        });
+    } else {
+        pollGlobal = null;
+    }
+    displayPoll(hasAlreadyVoted)
+}
+
+function displayPoll(hasAlreadyVoted) {
+    if(pollGlobal == null) {
+        document.getElementById('current_poll').innerHTML = "No Poll Selected.";
+        hideSubmit();
+        hideResult();
+        hideClosePollButton();
+    } else {
+        if(hasAlreadyVoted) {
+            document.getElementById('current_poll').innerHTML = "Yay! You've already voted!";
+            hideSubmit();
+        } else {
+            document.getElementById('current_poll').innerHTML = pollGlobal.getAsHTML();
+            showSubmit();
+        }
+
+        if(pollGlobal.createdBy == firebase.auth().currentUser.email) {
+            showResult();
+            if(pollGlobal.active)
+                showClosePollButton();
+        } else {
+            if(pollGlobal.active) {
+                hideResult();
+            }
+            hideClosePollButton();
+        }
+    }
+}
+
+function closePoll() {
+    var pollRef = db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollContent");
+    var pollListRef = db.collection("ListWiseActivePolls").doc("All");
+    var batch = db.batch();
+    batch.update(pollRef, {"active": false});
+    batch.update(pollListRef, {"ActivePolls": firebase.firestore.FieldValue.arrayRemove(pollGlobal.topic)});
+    batch.update(pollListRef, {"ClosedPolls": firebase.firestore.FieldValue.arrayUnion(pollGlobal.topic)});
+    batch.commit()
+        .then(function() {
+            displayMessageAndReload("The poll has been closed now.")
+        }, function() {
+            displayMessage("The poll could not be closed.")
+        })
+        .catch(function(error) {
+            console.log(error.code, error.message);
+            displayMessage("The poll could not be closed.")
         });
 }
 
@@ -178,11 +200,8 @@ function prettifyResultMap(poll) {
     var newPoll = new Object();
     for(var question in poll) {
         var newQuestion = new Object();
-        // console.log(poll[question])
         for(var option in poll[question]) {
-            // console.log(option);
             newQuestion[decodeFromFirebaseKey(option)] = poll[question][option]
-            // console.log(newQuestion)
         }
         newPoll[decodeFromFirebaseKey(question)] = newQuestion
     }
@@ -201,7 +220,7 @@ function getPollResults() {
                 var url = window.URL.createObjectURL(data);
                 var a = document.createElement('a');
                 a.href = url;
-                a.download = pollGlobal.topic + " Results.json";
+                a.download = decodeFromFirebaseKey(pollGlobal.topic) + " Results.txt";
                 a.click();
             }
         })
@@ -222,21 +241,34 @@ function signOut() {
         });
 }
 
-function hidebuttons() {
-    document.getElementById("poll_submit").classList.remove("dib");
+function hideResult() {
     document.getElementById("poll_result").classList.remove("dib");
-    document.getElementById("poll_submit").classList.add("dn");
     document.getElementById("poll_result").classList.add("dn");
 }
 
-function showsubmit() {
+function hideSubmit() {
+    document.getElementById("poll_submit").classList.remove("dib");
+    document.getElementById("poll_submit").classList.add("dn");
+}
+
+function showSubmit() {
     document.getElementById("poll_submit").classList.remove("dn");
     document.getElementById("poll_submit").classList.add("dib");
 }
 
-function showresult() {
+function showResult() {
     document.getElementById("poll_result").classList.remove("dn");
     document.getElementById("poll_result").classList.add("dib");
+}
+
+function showClosePollButton() {
+    document.getElementById("poll_close").classList.remove("dn");
+    document.getElementById("poll_close").classList.add("dib");
+}
+
+function hideClosePollButton() {
+    document.getElementById("poll_close").classList.remove("dib");
+    document.getElementById("poll_close").classList.add("dn");
 }
 
 function displayMessage(msg) {
