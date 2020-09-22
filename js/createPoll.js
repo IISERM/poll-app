@@ -160,5 +160,5 @@ function showOverlay() {
 }
 
 function hideOverlay() {
-    document.getElementById("overlay").style.display = "hidden";
+    document.getElementById("overlay").style.display = "none";
 }
