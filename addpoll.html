@@ -10,6 +10,9 @@
 </head>
 
 <body>
+    <div id="overlay" class="hidden">
+        <img src="img/progressBar.gif" id="progressBar">
+    </div>
     <div class="min-vh-100 flex flex-column justify-center pa3 avenir bg-washed-yellow">
         <header class="flex flex-wrap justify-center tc w-100 bb">
             <h1 class="f2 lh-title fw1 mt0"> Add Poll </h1>
@@ -99,6 +102,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+    <script src="js\domPurify\dist\purify.min.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/createPoll.js"></script>
 </body>

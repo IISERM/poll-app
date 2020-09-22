@@ -13,7 +13,9 @@ const desc = document.getElementById("desc")
 const anon = document.getElementById("anon")
 
 firebase.initializeApp(firebaseConfig);
+
 firebase.auth().onAuthStateChanged(function (user) {
+    hideOverlay();
     if (user) {
         if (!user.emailVerified) {
             window.location = "account-verify.html";
@@ -27,6 +29,7 @@ var db = firebase.firestore();
 var poll = new Poll("", "", "", 0, false, true, [])
 
 function uploadPoll() {
+    showOverlay();
     poll.createdBy = firebase.auth().currentUser.email;
     var pollDb = db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PollContent").withConverter(pollConverter);
     var pollListDb = db.collection("ListWiseActivePolls").doc("All");
@@ -54,9 +57,11 @@ function uploadPoll() {
     batch.set(db.collection("Polls").doc("Redundant").collection(poll.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": [] });
     batch.commit()
         .then(function () {
+            hideOverlay();
             displayMessageAndLeave("The Poll has been added.");
         })
         .catch(function (error) {
+            hideOverlay();
             console.log(error.code);
             console.log(error.message);
             displayMessage("There was an error in adding the poll.");
@@ -148,4 +153,12 @@ function displayMessageAndLeave(str) {
         div.classList.add("hidden");
         window.location = "polls.html";
     }, 1000);
+}
+
+function showOverlay() {
+    document.getElementById("overlay").classList.remove("hidden");
+}
+
+function hideOverlay() {
+    document.getElementById("overlay").classList.add("hidden");
 }
