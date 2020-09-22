@@ -15,13 +15,15 @@ var activePollsGlobal;
 var closedPollsGlobal;
 
 firebase.auth().onAuthStateChanged(function (user) {
-    hideOverlay();
     if (user) {
         if (!user.emailVerified) {
+            hideOverlay();
             window.location = "account-verify.html";
         }
+        hideOverlay();
         loadActivePolls();
     } else {
+        hideOverlay();
         window.location = "index.html";
     }
 });
@@ -315,5 +317,5 @@ function showOverlay() {
 }
 
 function hideOverlay() {
-    document.getElementById("overlay").style.display = "hidden";
+    document.getElementById("overlay").style.display = "none";
 }
