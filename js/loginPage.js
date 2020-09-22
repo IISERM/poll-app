@@ -168,10 +168,9 @@ function showSignInDiv() {
 }
 
 function showOverlay() {
-    document.getElementById("overlay").classList.remove("hidden");
+    document.getElementById("overlay").style.display = "block";
 }
 
 function hideOverlay() {
-    console.log("Hiding");
-    document.getElementById("overlay").classList.add("hidden");
+    document.getElementById("overlay").style.display = "hidden";
 }
