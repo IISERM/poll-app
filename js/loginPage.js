@@ -9,7 +9,7 @@ const firebaseConfig = {
     measurementId: "G-QMNV123VEJ"
 };
 firebase.initializeApp(firebaseConfig);
-
+showOverlay();
 firebase.auth().onAuthStateChanged(function (user) {
     hideOverlay();
     if (user) {
