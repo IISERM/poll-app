@@ -122,6 +122,7 @@ function encodeToFirebaseKey(s) {
 }
 
 function decodeFromFirebaseKey(s) {
+	s = DOMPurify.sanitize(s);
 	s = s.replace(/%2A/g, "*").replace(/%2E/g, ".").replace(/%7E/g, "~").replace(/%5F/g, "_").replace(/%21/g, "!").replace(/%27/g, "'").replace(/%28/g, "(").replace(/%29/g, ")").replace(/%2D/g, "-");
 	return s = decodeURIComponent(s);
 }

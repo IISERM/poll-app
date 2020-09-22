@@ -11,6 +11,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 firebase.auth().onAuthStateChanged(function (user) {
+    hideOverlay();
     if (user) {
         if (!user.emailVerified) {
             firebase.auth().currentUser.sendEmailVerification()
@@ -48,6 +49,7 @@ function login() {
     var email = document.getElementById("email").value.trim();
     var password = document.getElementById("passwordLogin").value;
     var persistenceMode = document.getElementById("ckbxRememberMe").checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+    showOverlay();
     firebase.auth().setPersistence(persistenceMode)
         .then(function () {
             firebase.auth().signInWithEmailAndPassword(email, password)
@@ -55,6 +57,7 @@ function login() {
                     console.log("Logged in.");
                 })
                 .catch(function (error) {
+                    hideOverlay();
                     var errorMessage = error.message;
                     var errorCode = error.code;
                     console.log(errorCode);
@@ -66,16 +69,18 @@ function login() {
                     } else if (errorCode == "auth/wrong-password") {
                         showError("Wrong Password");
                     } else {
-                        showError("Some error has occured. Please try again.");
+                        showError("Some error has occurred. Please try again.");
                     }
                 });
         })
         .catch(function (error) {
+            hideOverlay();
             console.log(error.code, error.message);
         });
 }
 
 function signUp() {
+    showOverlay();
     var email = document.getElementById("registrationNumber").value.trim() + "@iisermohali.ac.in";
     var password = document.getElementById("passwordSignUp").value;
     var confirmPassword = document.getElementById("confirmPassword").value;
@@ -84,9 +89,11 @@ function signUp() {
     } else {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(function () {
+                hideOverlay();
                 console.log("Created");
             })
             .catch(function (error) {
+                hideOverlay();
                 var errorCode = error.code;
                 console.log(errorCode);
                 console.log(error.message);
@@ -103,14 +110,17 @@ function signUp() {
 
 function sendResetPasswordLink() {
     var email = document.getElementById("forgotPasswordEmail").value.trim();
+    showOverlay();
     firebase.auth().sendPasswordResetEmail(email)
         .then(function () {
+            hideOverlay();
             showError("Reset Link Sent.")
         })
         .catch(function (error) {
             var errorCode = error.code;
             console.log(errorCode);
-            console.log(error.message)
+            console.log(error.message).
+            hideOverlay();
             if (error.code == "auth/user-not-found") {
                 showError("That username doesn't exist.");
             } else if (errorCode == "auth/invalid-email") {
@@ -155,4 +165,13 @@ function showSignInDiv() {
     hideError();
     document.getElementById("ckbxRememberMe").checked = false;
     location.hash = "signIn";
+}
+
+function showOverlay() {
+    document.getElementById("overlay").classList.remove("hidden");
+}
+
+function hideOverlay() {
+    console.log("Hiding");
+    document.getElementById("overlay").classList.add("hidden");
 }

@@ -15,6 +15,7 @@ var activePollsGlobal;
 var closedPollsGlobal;
 
 firebase.auth().onAuthStateChanged(function (user) {
+    hideOverlay();
     if (user) {
         if (!user.emailVerified) {
             window.location = "account-verify.html";
@@ -39,6 +40,7 @@ function removeFromSelect() {
 function loadActivePolls() {
     //The function logic would be different once the lists are there.
     //Right now, there is just one db having the name of all polls.
+    showOverlay();
     removeFromSelect();
     var select = document.getElementById("pollSelect");
     document.getElementById('current_poll').innerHTML = "No Poll Selected.";
@@ -60,8 +62,10 @@ function loadActivePolls() {
                 displayMessage("An unexpected error has occurred. Report to developers");
                 console.log("The document doesn't exist");
             }
+            hideOverlay();
         })
         .catch(function (error) {
+            hideOverlay();
             console.log(error.code);
             console.log(error.message);
             displayMessage("There was an error in fetching the polls. Please try again later.");
@@ -71,6 +75,7 @@ function loadActivePolls() {
 async function loadPollQuestions() {
     var collectionName = document.getElementById("pollSelect").value;
     if (collectionName != "---Select a Poll---") {
+        showOverlay();
         var alreadyVotedList = null;
         var hasAlreadyVoted = null;
         await db.collection("Polls").doc("Redundant").collection(collectionName).doc("PeopleWhoHaveAlreadyVoted").get()
@@ -92,6 +97,7 @@ async function loadPollQuestions() {
             } else {
                 pollGlobal = doc.data();
             }
+            displayPoll(hasAlreadyVoted)
         })
         .catch(function (error){
             console.log(error.code, error.message);
@@ -99,11 +105,12 @@ async function loadPollQuestions() {
         });
     } else {
         pollGlobal = null;
+        displayPoll(hasAlreadyVoted)
     }
-    displayPoll(hasAlreadyVoted)
 }
 
 function displayPoll(hasAlreadyVoted) {
+    hideOverlay();
     if(pollGlobal == null) {
         document.getElementById('current_poll').innerHTML = "No Poll Selected.";
         hideSubmit();
@@ -132,6 +139,7 @@ function displayPoll(hasAlreadyVoted) {
 }
 
 function closePoll() {
+    showOverlay();
     var pollRef = db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollContent");
     var pollListRef = db.collection("ListWiseActivePolls").doc("All");
     var batch = db.batch();
@@ -140,11 +148,14 @@ function closePoll() {
     batch.update(pollListRef, {"ClosedPolls": firebase.firestore.FieldValue.arrayUnion(pollGlobal.topic)});
     batch.commit()
         .then(function() {
+            hideOverlay();
             displayMessageAndReload("The poll has been closed now.")
         }, function() {
+            hideOverlay();
             displayMessage("The poll could not be closed.")
         })
         .catch(function(error) {
+            hideOverlay();
             console.log(error.code, error.message);
             displayMessage("The poll could not be closed.")
         });
@@ -152,6 +163,7 @@ function closePoll() {
 
 function submitPollResponse() {
     if (confirm("Are you sure you wish to submit your response? Once you submit, no changes are possible.")) {
+        showOverlay();
         var numOfQuestions = pollGlobal.questions.length;
         var i;
         var dbRef = db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults");
@@ -186,9 +198,11 @@ function submitPollResponse() {
             batch.update(db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PeopleWhoHaveAlreadyVoted"), { "AlreadyVoted": firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.email) });
             batch.commit()
                 .then(function () {
+                    hideOverlay();
                     displayMessageAndReload("Your response has been recorded.");
                 })
                 .catch(function (error) {
+                    hideOverlay();
                     displayMessage("Your response couldn't be recorded");
                     console.log(error.code, error.message);
                 });
@@ -209,9 +223,11 @@ function prettifyResultMap(poll) {
 }
 
 function getPollResults() {
+    showOverlay();
     db.collection("Polls").doc("Redundant").collection(pollGlobal.topic).doc("PollResults")
         .get()
         .then(function (doc) {
+            hideOverlay();
             if (!doc.exists) {
                 displayMessage("An unexpected error has occurred. Report to the developers");
             } else {
@@ -225,12 +241,14 @@ function getPollResults() {
             }
         })
         .catch(function (error) {
+            hideOverlay();
             displayMessage("An error has occurred.");
             console.log(error.code, error.message);
         });
 }
 
 function signOut() {
+    showOverlay();
     removeFromSelect();
     document.getElementById('current_poll').innerHTML = "No Poll Selected";
     firebase.auth().signOut()
@@ -290,4 +308,12 @@ function displayMessageAndReload(msg) {
         div.classList.add("hidden");
         window.location.reload();
     }, 1000);
+}
+
+function showOverlay() {
+    document.getElementById("overlay").classList.remove("hidden");
+}
+
+function hideOverlay() {
+    document.getElementById("overlay").classList.add("hidden");
 }
