@@ -311,9 +311,9 @@ function displayMessageAndReload(msg) {
 }
 
 function showOverlay() {
-    document.getElementById("overlay").classList.remove("hidden");
+    document.getElementById("overlay").style.display = "block";
 }
 
 function hideOverlay() {
-    document.getElementById("overlay").classList.add("hidden");
+    document.getElementById("overlay").style.display = "hidden";
 }
