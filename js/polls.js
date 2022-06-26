@@ -205,7 +205,7 @@ function submitPollResponse() {
                 })
                 .catch(function (error) {
                     hideOverlay();
-                    displayMessage("Your response couldn't be recorded");
+                    displayMessage("Your response couldn't be recorded"+error.message);
                     console.log(error.code, error.message);
                 });
         }
