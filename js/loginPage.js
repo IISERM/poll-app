@@ -98,7 +98,7 @@ function signUp() {
                 console.log(errorCode);
                 console.log(error.message);
                 if (errorCode == "auth/email-already-in-use") {
-                    showError("You are alredy registered. Please sign in to continue.");
+                    showError("You are already registered. Please sign in to continue.");
                 } else if (errorCode == "auth/weak-password") {
                     showError("Password must be a string with at least six characters.");
                 } else {
